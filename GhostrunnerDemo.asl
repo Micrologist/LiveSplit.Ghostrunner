@@ -21,6 +21,9 @@ startup
 
 start
 {
+    if(current.xPos == 0f || current.yPos == 0f)
+        return false;
+    
     if((Math.Round(old.xPos) == -20179 && Math.Round(current.xPos) != -20179) ||(Math.Round(old.xPos) == -670638 && Math.Round(current.xPos) != -67068) )
     //if(!current.cantControl && old.cantControl)
     {
