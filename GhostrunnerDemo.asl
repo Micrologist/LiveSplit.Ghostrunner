@@ -27,7 +27,7 @@ start
     if((Math.Round(old.xPos) == -20179 && Math.Round(current.xPos) != -20179) ||(Math.Round(old.xPos) == -670638 && Math.Round(current.xPos) != -67068) )
     //if(!current.cantControl && old.cantControl)
     {
-        vars.timerOffset = current.time - 21.0f;
+        vars.timerOffset = current.time - 20.2f;
         print("LiveSplit.exe timer offset: "+vars.timerOffset.ToString());
         return true;
     }
