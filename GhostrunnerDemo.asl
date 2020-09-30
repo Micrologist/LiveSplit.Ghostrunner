@@ -12,6 +12,13 @@ state("Ghostrunner-Win64-Shipping", "Demo2 v2")
     string250 map : 0x037F8F28, 0x30, 0xF8, 0x0;
 }
 
+state("Ghostrunner-Win64-Shipping", "Demo2 v3")
+{
+    float preciseTime : 0x037F6F28, 0x178, 0x27C;
+    float levelTime : 0x0397C958, 0x128, 0x384;
+    string250 map : 0x037F6F28, 0x30, 0xF8, 0x0;
+}
+
 startup
 {
     vars.previousTime = 0.0f;
@@ -40,6 +47,9 @@ init
     {
         case 65032192:
             version = "Demo2 v2";
+            break;
+        case 65024000:
+            version = "Demo2 v3";
             break;
         default:
             version = "Unsupported - " + moduleSize.ToString();
