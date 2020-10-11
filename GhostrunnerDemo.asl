@@ -17,11 +17,17 @@ state("Ghostrunner-Win64-Shipping", "Demo2 v3")
     float preciseTime : 0x037F6F28, 0x178, 0x27C;
     float levelTime : 0x0397C958, 0x128, 0x384;
     string250 map : 0x037F6F28, 0x30, 0xF8, 0x0;
+    float xVel : 0x037F59B0, 0x30, 0x280, 0xC4;
+    float yVel : 0x037F59B0, 0x30, 0x280, 0xC8;
 }
 
 startup
 {
     vars.previousTime = 0.0f;
+
+    settings.Add("speedometer", false, "Show Speedometer");
+    settings.Add("speedround", false, "Round to whole number", "speedometer");
+    
 
     if (timer.CurrentTimingMethod == TimingMethod.RealTime)
     {
@@ -38,6 +44,34 @@ startup
             timer.CurrentTimingMethod = TimingMethod.GameTime;
         }
     }
+
+    vars.SetTextComponent = (Action<string, string>)((id, text) => //Logic to drive text components from ASL
+	{
+        var textSettings = timer.Layout.Components.Where(x => x.GetType().Name == "TextComponent").Select(x => x.GetType().GetProperty("Settings").GetValue(x, null));
+        var textSetting = textSettings.FirstOrDefault(x => (x.GetType().GetProperty("Text1").GetValue(x, null) as string) == id);
+        if (textSetting == null)
+        {
+            var textComponentAssembly = Assembly.LoadFrom("Components\\LiveSplit.Text.dll");
+            var textComponent = Activator.CreateInstance(textComponentAssembly.GetType("LiveSplit.UI.Components.TextComponent"), timer);
+            timer.Layout.LayoutComponents.Add(new LiveSplit.UI.Components.LayoutComponent("LiveSplit.Text.dll", textComponent as LiveSplit.UI.Components.IComponent));
+
+            textSetting = textComponent.GetType().GetProperty("Settings", BindingFlags.Instance | BindingFlags.Public).GetValue(textComponent, null);
+            textSetting.GetType().GetProperty("Text1").SetValue(textSetting, id);
+        }
+
+        if (textSetting != null)
+            textSetting.GetType().GetProperty("Text2").SetValue(textSetting, text);
+	});
+
+    vars.UpdateSpeedometer = (Action<float, float, bool>)((x, y, round) =>
+    {
+        double hvel = Math.Floor(Math.Sqrt(x*x + y*y)+0.5);
+        
+        if(round)
+            vars.SetTextComponent("Speed", Math.Floor(hvel/100).ToString("") + " m/s");
+        else
+            vars.SetTextComponent("Speed", (hvel/100).ToString("0.00") + " m/s");
+    });
 }
 
 init
@@ -79,6 +113,10 @@ update
     {
         vars.previousTime = 0.0f;
     }
+
+    //if(current.xVel != old.xVel || current.yVel != old.yVel)
+    if(settings["speedometer"])
+        vars.UpdateSpeedometer(current.xVel, current.yVel, settings["speedround"]);
 }
 
 gameTime
