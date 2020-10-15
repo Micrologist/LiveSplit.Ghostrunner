@@ -82,6 +82,7 @@ init
         case 65032192:
             version = "Demo2 v2";
             break;
+        case 64815104:
         case 65024000:
             version = "Demo2 v3";
             break;
@@ -114,7 +115,6 @@ update
         vars.previousTime = 0.0f;
     }
 
-    //if(current.xVel != old.xVel || current.yVel != old.yVel)
     if(settings["speedometer"])
         vars.UpdateSpeedometer(current.xVel, current.yVel, settings["speedround"]);
 }
