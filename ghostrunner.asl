@@ -1,10 +1,9 @@
 state("Ghostrunner-Win64-Shipping")
 {
-    float preciseTime : 0x0, 0x178, 0x27C;
-    float levelTime : 0x0, 0x128, 0x384;
-    string250 map : 0x0, 0x30, 0xF8, 0x0;
-    float xVel : 0x0, 0x30, 0x280, 0xC4;
-    float yVel : 0x0, 0x30, 0x280, 0xC8;
+    float preciseTime : 0x042E1678, 0x1A8, 0x284;
+    float levelTime : 0x0455C860, 0x128, 0x38C;
+    float xVel : 0x042E16B8, 0x30, 0x288, 0xC4;
+    float yVel : 0x042E16B8, 0x30, 0x288, 0xC8;
 }
 
 startup
@@ -59,8 +58,8 @@ init
     int moduleSize = modules.First().ModuleMemorySize;
     switch (moduleSize)
     {
-        case 0x0:
-            version = "UNKNOWN";
+        case 78057472:
+            version = "steam1";
             break;
         default:
             version = "Unsupported - " + moduleSize.ToString();
