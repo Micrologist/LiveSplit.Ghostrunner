@@ -1,9 +1,17 @@
-state("Ghostrunner-Win64-Shipping")
+state("Ghostrunner-Win64-Shipping", "steam1")
 {
     float preciseTime : 0x042E1678, 0x1A8, 0x284;
     float levelTime : 0x0455C860, 0x128, 0x38C;
     float xVel : 0x042E16B8, 0x30, 0x288, 0xC4;
     float yVel : 0x042E16B8, 0x30, 0x288, 0xC8;
+}
+
+state("Ghostrunner-Win64-Shipping", "gog1")
+{
+    float preciseTime : 0x0430CC10, 0x1A8, 0x284;
+    float levelTime : 0x04587F20, 0x128, 0x38C;
+    float xVel : 0x0430CC48, 0x30, 0x288, 0xC4;
+    float yVel : 0x0430CC48, 0x30, 0x288, 0xC8;
 }
 
 startup
@@ -60,6 +68,9 @@ init
     {
         case 78057472:
             version = "steam1";
+            break;
+        case 78036992:
+            version = "gog1";
             break;
         default:
             version = "Unsupported - " + moduleSize.ToString();
