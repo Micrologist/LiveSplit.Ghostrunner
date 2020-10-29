@@ -118,7 +118,7 @@ split
     if (old.levelTime != current.levelTime && current.levelTime == current.preciseTime && current.preciseTime != 0)
         vars.splitOnNextLoad = true;
 
-    if((current.loading1) && vars.splitOnNextLoad)
+    if(current.loading && vars.splitOnNextLoad)
     {
         vars.splitOnNextLoad = false;
         return true;
