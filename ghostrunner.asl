@@ -4,6 +4,7 @@ state("Ghostrunner-Win64-Shipping", "steam1")
     float levelTime : 0x0455C860, 0x128, 0x38C;
     float xVel : 0x042E16B8, 0x30, 0x288, 0xC4;
     float yVel : 0x042E16B8, 0x30, 0x288, 0xC8;
+    bool loading : 0x04417978, 0x1E8;
 }
 
 state("Ghostrunner-Win64-Shipping", "gog1")
@@ -12,21 +13,32 @@ state("Ghostrunner-Win64-Shipping", "gog1")
     float levelTime : 0x04587F20, 0x128, 0x38C;
     float xVel : 0x0430CC48, 0x30, 0x288, 0xC4;
     float yVel : 0x0430CC48, 0x30, 0x288, 0xC8;
+    bool loading : 0x04443038, 0x1E8;
+}
+
+state("Ghostrunner-Win64-Shipping", "egs1")
+{
+    float preciseTime : 0x042EA098, 0x1A8, 0x284;
+    float levelTime : 0x04565320, 0x128, 0x38C;
+    float xVel : 0x042EA0D0, 0x30, 0x288, 0xC4;
+    float yVel : 0x042EA0D0, 0x30, 0x288, 0xC8;
+    bool loading : 0x04420438, 0x1E8;
 }
 
 startup
 {
-    vars.previousTime = 0.0f;
     settings.Add("speedometer", false, "Show Speedometer");
     settings.Add("speedround", false, "Round to whole number", "speedometer");
+
+    vars.splitOnNextLoad = false;
     
     if (timer.CurrentTimingMethod == TimingMethod.RealTime)
     {
         var timingMessage = MessageBox.Show(
-            "This game uses Game Time (IGT) as the main timing method.\n"
+            "This game uses RTA w/o Loads as the main timing method.\n"
             + "LiveSplit is currently set to show Real Time (RTA).\n"
-            + "Would you like to set the timing method to Game Time?",
-            "Ghostrunner Demo | LiveSplit",
+            + "Would you like to set the timing method to RTA w/o Loads?",
+            "Ghostrunner | LiveSplit",
             MessageBoxButtons.YesNo, MessageBoxIcon.Question
         );
         if (timingMessage == DialogResult.Yes)
@@ -72,6 +84,9 @@ init
         case 78036992:
             version = "gog1";
             break;
+        case 77885440:
+            version = "egs1";
+            break;
         default:
             version = "Unsupported - " + moduleSize.ToString();
             MessageBox.Show("This game version is currently not supported.", "LiveSplit Auto Splitter - Unsupported Game Version");
@@ -79,30 +94,18 @@ init
     }
 }
 
-isLoading{ return true; }
+isLoading
+{
+    return (current.loading);
+}
 
 update
 {
     if (version.Contains("Unsupported"))
         return false;
 
-    if(timer.CurrentPhase == TimerPhase.Running)
-    {
-        if(current.preciseTime < old.preciseTime)
-            vars.previousTime += old.preciseTime;
-    }
-    else
-    {
-        vars.previousTime = 0.0f;
-    }
-
     if(settings["speedometer"])
         vars.UpdateSpeedometer(current.xVel, current.yVel, settings["speedround"]);
-}
-
-gameTime
-{
-    return TimeSpan.FromSeconds(current.preciseTime + vars.previousTime);
 }
 
 start
@@ -112,5 +115,12 @@ start
 
 split
 {
-    return (old.levelTime != current.levelTime && current.levelTime == current.preciseTime && current.preciseTime != 0);
+    if (old.levelTime != current.levelTime && current.levelTime == current.preciseTime && current.preciseTime != 0)
+        vars.splitOnNextLoad = true;
+
+    if((current.loading1) && vars.splitOnNextLoad)
+    {
+        vars.splitOnNextLoad = false;
+        return true;
+    }
 }
