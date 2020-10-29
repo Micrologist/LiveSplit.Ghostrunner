@@ -5,6 +5,8 @@ state("Ghostrunner-Win64-Shipping", "steam1")
     float xVel : 0x042E16B8, 0x30, 0x288, 0xC4;
     float yVel : 0x042E16B8, 0x30, 0x288, 0xC8;
     bool loading : 0x04417978, 0x1E8;
+    byte completedLvls : 0x0453A8B0, 0x50, 0x590, 0xF0;
+    byte completedSections : 0x0453A8B0, 0x50, 0x590, 0x118;
 }
 
 state("Ghostrunner-Win64-Shipping", "gog1")
@@ -14,6 +16,8 @@ state("Ghostrunner-Win64-Shipping", "gog1")
     float xVel : 0x0430CC48, 0x30, 0x288, 0xC4;
     float yVel : 0x0430CC48, 0x30, 0x288, 0xC8;
     bool loading : 0x04443038, 0x1E8;
+    byte completedLvls : 0x04565F70, 0x50, 0x590, 0xF0;
+    byte completedSections : 0x04565F70, 0x50, 0x590, 0x118;
 }
 
 state("Ghostrunner-Win64-Shipping", "egs1")
@@ -23,14 +27,17 @@ state("Ghostrunner-Win64-Shipping", "egs1")
     float xVel : 0x042EA0D0, 0x30, 0x288, 0xC4;
     float yVel : 0x042EA0D0, 0x30, 0x288, 0xC8;
     bool loading : 0x04420438, 0x1E8;
+    byte completedLvls : 0x0, 0x50, 0x590, 0xF0; //<-- TODO
+    byte completedSections : 0x0, 0x50, 0x590, 0x118;
 }
 
 startup
 {
+    vars.splitOnNextLoad = false;
+    settings.Add("lvlSplit", true, "Split after completing a level");
+    settings.Add("sectionSplit", false, "Split after completing a section", "lvlSplit");
     settings.Add("speedometer", false, "Show Speedometer");
     settings.Add("speedround", false, "Round to whole number", "speedometer");
-
-    vars.splitOnNextLoad = false;
     
     if (timer.CurrentTimingMethod == TimingMethod.RealTime)
     {
@@ -96,7 +103,7 @@ init
 
 isLoading
 {
-    return (current.loading);
+    return current.loading;
 }
 
 update
@@ -115,7 +122,7 @@ start
 
 split
 {
-    if (old.levelTime != current.levelTime && current.levelTime == current.preciseTime && current.preciseTime != 0)
+    if ((current.completedSections > old.completedSections && settings["sectionSplit"]) || (current.completedLvls > old.completedLvls && settings["lvlSplit"]))
         vars.splitOnNextLoad = true;
 
     if(current.loading && vars.splitOnNextLoad)
