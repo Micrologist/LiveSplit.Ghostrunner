@@ -137,3 +137,8 @@ split
         return true;
     }
 }
+
+exit
+{
+    timer.IsGameTimePaused = true;
+}
