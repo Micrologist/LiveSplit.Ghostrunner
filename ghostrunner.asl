@@ -122,8 +122,14 @@ start
 
 split
 {
+    if(current.completedLvls > 17 || current.completedLvls < 0)
+        return false;
+        
     if ((current.completedSections > old.completedSections && settings["sectionSplit"]) || (current.completedLvls > old.completedLvls && settings["lvlSplit"]))
         vars.splitOnNextLoad = true;
+
+    if (current.completedLvls == 17 && old.completedLvls < 17)
+        return true;
 
     if(current.loading && vars.splitOnNextLoad)
     {
