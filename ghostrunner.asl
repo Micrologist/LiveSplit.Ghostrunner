@@ -115,6 +115,12 @@ update
     if (version.Contains("Unsupported"))
         return false;
 
+    if(timer.CurrentPhase != TimerPhase.Running)
+    {
+        vars.endLevelPause = false;
+        vars.splitOnNextLoad = false;
+    }
+
     if(current.completedLvls > old.completedLvls)
         vars.endLevelPause = true;
 
@@ -150,5 +156,5 @@ split
 
 exit
 {
-	timer.IsGameTimePaused = true;
+    timer.IsGameTimePaused = true;
 }
