@@ -8,6 +8,7 @@ state("Ghostrunner-Win64-Shipping", "steam1")
     byte completedLvls : 0x0453A8B0, 0x50, 0x590, 0xF0;
     byte completedSections : 0x0453A8B0, 0x50, 0x590, 0x118;
     string250 map : 0x042E1678, 0x30, 0xF8, 0x0;
+    bool leaderboardShown : 0x042E1AC8, 0x80;
 }
 
 state("Ghostrunner-Win64-Shipping", "gog1")
@@ -20,6 +21,7 @@ state("Ghostrunner-Win64-Shipping", "gog1")
     byte completedLvls : 0x04565F70, 0x50, 0x590, 0xF0;
     byte completedSections : 0x04565F70, 0x50, 0x590, 0x118;
     string250 map : 0x0430CC10, 0x30, 0xF8, 0x0;
+    bool leaderboardShown : 0x0430D058, 0x80;
 }
 
 state("Ghostrunner-Win64-Shipping", "egs1")
@@ -32,12 +34,11 @@ state("Ghostrunner-Win64-Shipping", "egs1")
     byte completedLvls : 0x04543370, 0x50, 0x590, 0xF0;
     byte completedSections : 0x04543370, 0x50, 0x590, 0x118;
     string250 map : 0x042EA098, 0x30, 0xF8, 0x0;
+    bool leaderboardShown : 0x0, 0x0; //<-- TODO
 }
 
 startup
 {
-    vars.splitOnNextLoad = false;
-    vars.endLevelPause = false;
     settings.Add("lvlSplit", true, "Split after completing a level");
     settings.Add("sectionSplit", false, "Split after completing a section", "lvlSplit");
     settings.Add("speedometer", false, "Show Speedometer");
@@ -107,25 +108,13 @@ init
 
 isLoading
 {
-    return (current.loading || vars.endLevelPause || current.map == "/Game/Levels/MainMenu/MainMenu");
+    return (current.loading || current.leaderboardShown || current.map == "/Game/Levels/MainMenu/MainMenu");
 }
 
 update
 {
     if (version.Contains("Unsupported"))
         return false;
-
-    if(timer.CurrentPhase != TimerPhase.Running)
-    {
-        vars.endLevelPause = false;
-        vars.splitOnNextLoad = false;
-    }
-
-    if(current.completedLvls > old.completedLvls)
-        vars.endLevelPause = true;
-
-    if(current.loading)
-        vars.endLevelPause = false;
 
     if(settings["speedometer"])
         vars.UpdateSpeedometer(current.xVel, current.yVel, settings["speedround"]);
@@ -138,20 +127,11 @@ start
 
 split
 {
-    if(current.completedLvls > 17 || current.completedLvls < 0)
-        return false;
-        
-    if ((current.completedSections > old.completedSections && settings["sectionSplit"]) || (current.completedLvls > old.completedLvls && settings["lvlSplit"]))
-        vars.splitOnNextLoad = true;
+    if (current.leaderboardShown && !old.leaderboardShown && current.map != "/Game/Levels/MainMenu/MainMenu")
+        return true;
 
     if (current.completedLvls == 17 && old.completedLvls < 17)
         return true;
-
-    if(current.loading && vars.splitOnNextLoad)
-    {
-        vars.splitOnNextLoad = false;
-        return true;
-    }
 }
 
 exit
