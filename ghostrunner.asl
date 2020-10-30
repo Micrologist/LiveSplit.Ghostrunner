@@ -34,6 +34,7 @@ state("Ghostrunner-Win64-Shipping", "egs1")
 startup
 {
     vars.splitOnNextLoad = false;
+    vars.endLevelPause = false;
     settings.Add("lvlSplit", true, "Split after completing a level");
     settings.Add("sectionSplit", false, "Split after completing a section", "lvlSplit");
     settings.Add("speedometer", false, "Show Speedometer");
@@ -103,13 +104,19 @@ init
 
 isLoading
 {
-    return current.loading;
+    return (current.loading || vars.endLevelPause);
 }
 
 update
 {
     if (version.Contains("Unsupported"))
         return false;
+
+    if(current.completedLvls > old.completedLvls)
+        vars.endLevelPause = true;
+
+    if(current.loading)
+        vars.endLevelPause = false;
 
     if(settings["speedometer"])
         vars.UpdateSpeedometer(current.xVel, current.yVel, settings["speedround"]);
@@ -136,9 +143,4 @@ split
         vars.splitOnNextLoad = false;
         return true;
     }
-}
-
-exit
-{
-    timer.IsGameTimePaused = true;
 }
