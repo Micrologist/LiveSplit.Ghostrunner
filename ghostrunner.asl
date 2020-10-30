@@ -7,6 +7,7 @@ state("Ghostrunner-Win64-Shipping", "steam1")
     bool loading : 0x04417978, 0x1E8;
     byte completedLvls : 0x0453A8B0, 0x50, 0x590, 0xF0;
     byte completedSections : 0x0453A8B0, 0x50, 0x590, 0x118;
+    string250 map : 0x042E1678, 0x30, 0xF8, 0x0;
 }
 
 state("Ghostrunner-Win64-Shipping", "gog1")
@@ -18,6 +19,7 @@ state("Ghostrunner-Win64-Shipping", "gog1")
     bool loading : 0x04443038, 0x1E8;
     byte completedLvls : 0x04565F70, 0x50, 0x590, 0xF0;
     byte completedSections : 0x04565F70, 0x50, 0x590, 0x118;
+    string250 map : 0x0430CC10, 0x30, 0xF8, 0x0;
 }
 
 state("Ghostrunner-Win64-Shipping", "egs1")
@@ -27,8 +29,9 @@ state("Ghostrunner-Win64-Shipping", "egs1")
     float xVel : 0x042EA0D0, 0x30, 0x288, 0xC4;
     float yVel : 0x042EA0D0, 0x30, 0x288, 0xC8;
     bool loading : 0x04420438, 0x1E8;
-    byte completedLvls : 0x0, 0x50, 0x590, 0xF0; //<-- TODO
-    byte completedSections : 0x0, 0x50, 0x590, 0x118;
+    byte completedLvls : 0x04543370, 0x50, 0x590, 0xF0;
+    byte completedSections : 0x04543370, 0x50, 0x590, 0x118;
+    string250 map : 0x042EA098, 0x30, 0xF8, 0x0;
 }
 
 startup
@@ -104,7 +107,7 @@ init
 
 isLoading
 {
-    return (current.loading || vars.endLevelPause);
+    return (current.loading || vars.endLevelPause || current.map == "/Game/Levels/MainMenu/MainMenu");
 }
 
 update
