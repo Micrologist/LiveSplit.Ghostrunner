@@ -122,14 +122,19 @@ update
     if(timer.CurrentPhase != TimerPhase.Running || current.loading || current.map == "/Game/Levels/MainMenu/MainMenu")
     {
         vars.endLevelPause = false;
-        vars.splitNextLoad = false;
     }
+
+    if(timer.CurrentPhase != TimerPhase.Running)
+        vars.splitNextLoad = false;
 
     if (current.leaderboardShown && !old.leaderboardShown && current.map != "/Game/Levels/MainMenu/MainMenu")
         vars.endLevelPause = true;
 
     if (current.completedSections > old.completedSections && current.map != "Game/Levels/MainMenu/MainMenu" && settings["sectionSplit"])
+    {
         vars.splitNextLoad = true;
+        print("detected section finish");
+    }
 
     if(settings["speedometer"])
         vars.UpdateSpeedometer(current.xVel, current.yVel, settings["speedround"]);
