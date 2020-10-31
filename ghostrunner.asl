@@ -144,9 +144,11 @@ split
     if (current.leaderboardShown && !old.leaderboardShown && current.map != "/Game/Levels/MainMenu/MainMenu" && settings["lvlSplit"])
         return true;
 
-    if (vars.splitNextLoad)
+    if (vars.splitNextLoad && current.loading)
+    {
+        vars.splitNextLoad = false;
         return true;
-
+    }
     if (current.completedLvls == 17 && old.completedLvls < 17)
         return true;
 }
