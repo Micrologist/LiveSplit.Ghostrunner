@@ -160,4 +160,5 @@ split
 exit
 {
     timer.IsGameTimePaused = true;
+    vars.endLevelPause = true;
 }
