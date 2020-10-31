@@ -90,6 +90,7 @@ startup
 init
 {
     int moduleSize = modules.First().ModuleMemorySize;
+    print(moduleSize.ToString(""));
     switch (moduleSize)
     {
         case 78057472:
@@ -142,7 +143,10 @@ start
 split
 {
     if (current.leaderboardShown && !old.leaderboardShown && current.map != "/Game/Levels/MainMenu/MainMenu" && settings["lvlSplit"])
+    {   
+        vars.splitNextLoad = false;
         return true;
+    }
 
     if (vars.splitNextLoad && current.loading)
     {
