@@ -40,6 +40,7 @@ state("Ghostrunner-Win64-Shipping", "egs1")
 startup
 {
     vars.endLevelPause = false;
+    vars.splitNextLoad = false;
     settings.Add("lvlSplit", true, "Split after completing a level");
     settings.Add("sectionSplit", false, "Split after completing a section", "lvlSplit");
     settings.Add("speedometer", false, "Show Speedometer");
@@ -118,10 +119,16 @@ update
         return false;
 
     if(timer.CurrentPhase != TimerPhase.Running || current.loading || current.map == "/Game/Levels/MainMenu/MainMenu")
+    {
         vars.endLevelPause = false;
+        vars.splitNextLoad = false;
+    }
 
     if (current.leaderboardShown && !old.leaderboardShown && current.map != "/Game/Levels/MainMenu/MainMenu")
         vars.endLevelPause = true;
+
+    if (current.completedSections > old.completedSections && current.map != "Game/Levels/MainMenu/MainMenu" && settings["sectionSplit"])
+        vars.splitNextLoad = true;
 
     if(settings["speedometer"])
         vars.UpdateSpeedometer(current.xVel, current.yVel, settings["speedround"]);
@@ -134,7 +141,10 @@ start
 
 split
 {
-    if (current.leaderboardShown && !old.leaderboardShown && current.map != "/Game/Levels/MainMenu/MainMenu")
+    if (current.leaderboardShown && !old.leaderboardShown && current.map != "/Game/Levels/MainMenu/MainMenu" && settings["lvlSplit"])
+        return true;
+
+    if (vars.splitNextLoad)
         return true;
 
     if (current.completedLvls == 17 && old.completedLvls < 17)
