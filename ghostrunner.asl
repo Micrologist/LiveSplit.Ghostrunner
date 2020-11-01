@@ -34,15 +34,13 @@ state("Ghostrunner-Win64-Shipping", "egs1")
     byte completedLvls : 0x04543370, 0x50, 0x590, 0xF0;
     byte completedSections : 0x04543370, 0x50, 0x590, 0x118;
     string250 map : 0x042EA098, 0x30, 0xF8, 0x0;
-    bool leaderboardShown : 0x0, 0x0; //<-- TODO
+    bool leaderboardShown : 0x042EA108, 0x80;
 }
 
 startup
 {
     vars.endLevelPause = false;
-    vars.splitNextLoad = false;
     settings.Add("lvlSplit", true, "Split after completing a level");
-    settings.Add("sectionSplit", false, "Split after completing a section", "lvlSplit");
     settings.Add("speedometer", false, "Show Speedometer");
     settings.Add("speedround", false, "Round to whole number", "speedometer");
     
@@ -90,7 +88,6 @@ startup
 init
 {
     int moduleSize = modules.First().ModuleMemorySize;
-    print(moduleSize.ToString(""));
     switch (moduleSize)
     {
         case 78057472:
@@ -120,21 +117,10 @@ update
         return false;
 
     if(timer.CurrentPhase != TimerPhase.Running || current.loading || current.map == "/Game/Levels/MainMenu/MainMenu")
-    {
         vars.endLevelPause = false;
-    }
-
-    if(timer.CurrentPhase != TimerPhase.Running)
-        vars.splitNextLoad = false;
 
     if (current.leaderboardShown && !old.leaderboardShown && current.map != "/Game/Levels/MainMenu/MainMenu")
         vars.endLevelPause = true;
-
-    if (current.completedSections > old.completedSections && current.map != "Game/Levels/MainMenu/MainMenu" && settings["sectionSplit"])
-    {
-        vars.splitNextLoad = true;
-        print("detected section finish");
-    }
 
     if(settings["speedometer"])
         vars.UpdateSpeedometer(current.xVel, current.yVel, settings["speedround"]);
@@ -148,16 +134,8 @@ start
 split
 {
     if (current.leaderboardShown && !old.leaderboardShown && current.map != "/Game/Levels/MainMenu/MainMenu" && settings["lvlSplit"])
-    {   
-        vars.splitNextLoad = false;
         return true;
-    }
 
-    if (vars.splitNextLoad && current.loading)
-    {
-        vars.splitNextLoad = false;
-        return true;
-    }
     if (current.completedLvls == 17 && old.completedLvls < 17)
         return true;
 }
