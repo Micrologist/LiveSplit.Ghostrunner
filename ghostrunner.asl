@@ -151,7 +151,7 @@ split
     if (current.leaderboardShown && !old.leaderboardShown && current.map != "/Game/Levels/MainMenu/MainMenu" && settings["lvlSplit"])
         return true;
 
-    if (current.completedLvls == 17 && old.completedLvls < 17)
+    if (current.map == "/Game/Levels/03_HIGHTECH/03_04/Cyberspace_Architect" && current.levelTime > old.levelTime && old.levelTime != 0.0f)
         return true;
 }
 
