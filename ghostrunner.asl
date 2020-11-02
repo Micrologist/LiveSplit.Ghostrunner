@@ -9,6 +9,7 @@ state("Ghostrunner-Win64-Shipping", "steam1")
     byte completedSections : 0x0453A8B0, 0x50, 0x590, 0x118;
     string250 map : 0x042E1678, 0x30, 0xF8, 0x0;
     bool leaderboardShown : 0x042E1AC8, 0x80;
+    int deaths : 0x042E1678, 0x1A8, 0x28C;
 }
 
 state("Ghostrunner-Win64-Shipping", "gog1")
@@ -22,6 +23,7 @@ state("Ghostrunner-Win64-Shipping", "gog1")
     byte completedSections : 0x04565F70, 0x50, 0x590, 0x118;
     string250 map : 0x0430CC10, 0x30, 0xF8, 0x0;
     bool leaderboardShown : 0x0430D058, 0x80;
+    int deaths : 0x0430CC10, 0x1A8, 0x28C;
 }
 
 state("Ghostrunner-Win64-Shipping", "egs1")
@@ -35,14 +37,17 @@ state("Ghostrunner-Win64-Shipping", "egs1")
     byte completedSections : 0x04543370, 0x50, 0x590, 0x118;
     string250 map : 0x042EA098, 0x30, 0xF8, 0x0;
     bool leaderboardShown : 0x042EA108, 0x80;
+    int deaths : 0x042EA098, 0x1A8, 0x28C;
 }
 
 startup
 {
     vars.endLevelPause = false;
+    vars.previousDeaths = 0;
     settings.Add("lvlSplit", true, "Split after completing a level");
     settings.Add("speedometer", false, "Show Speedometer");
     settings.Add("speedround", false, "Round to whole number", "speedometer");
+    settings.Add("deathcounter", false, "Show Death Counter");
     
     if (timer.CurrentTimingMethod == TimingMethod.RealTime)
     {
@@ -122,8 +127,17 @@ update
     if (current.leaderboardShown && !old.leaderboardShown && current.map != "/Game/Levels/MainMenu/MainMenu")
         vars.endLevelPause = true;
 
+    if(timer.CurrentPhase != TimerPhase.Running)
+        vars.previousDeaths = 0;
+
+    if(current.deaths == 0 && old.deaths > 0)
+        vars.previousDeaths += old.deaths;
+
     if(settings["speedometer"])
         vars.UpdateSpeedometer(current.xVel, current.yVel, settings["speedround"]);
+
+    if(settings["deathcounter"])
+        vars.SetTextComponent("Deaths", (vars.previousDeaths + current.deaths).ToString());
 }
 
 start
