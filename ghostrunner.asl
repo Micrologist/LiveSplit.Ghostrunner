@@ -43,8 +43,7 @@ state("Ghostrunner-Win64-Shipping", "egs1")
 startup
 {
     vars.endLevelPause = false;
-    vars.previousDeaths = 0;
-    vars.addDeathsNextLoad = 0;
+    vars.deathCount = 0;
 
     settings.Add("lvlSplit", true, "Split after completing a level");
     settings.Add("speedometer", false, "Show Speedometer");
@@ -127,28 +126,19 @@ update
         vars.endLevelPause = false;
 
     if (current.leaderboardShown && !old.leaderboardShown && current.map != "/Game/Levels/MainMenu/MainMenu")
-    {
         vars.endLevelPause = true;
-        vars.addDeathsNextLoad = current.deaths;
-    }
 
-    if(current.loading && vars.addDeathsNextLoad != 0)
-    {
-        vars.previousDeaths += vars.addDeathsNextLoad;
-        vars.addDeathsNextLoad = 0;
-    }
+    if(current.deaths == old.deaths + 1 && current.preciseTime > 0.0f)
+        vars.deathCount += 1;
 
     if(timer.CurrentPhase != TimerPhase.Running)
-    {
-        vars.previousDeaths = 0;
-        vars.addDeathsNextLoad = 0;
-    }
+        vars.deathCount = 0;
 
     if(settings["speedometer"])
         vars.UpdateSpeedometer(current.xVel, current.yVel, settings["speedround"]);
 
     if(settings["deathcounter"])
-        vars.SetTextComponent("Deaths", (vars.previousDeaths + current.deaths).ToString());
+        vars.SetTextComponent("Deaths", (vars.deathCount).ToString());
 }
 
 start
