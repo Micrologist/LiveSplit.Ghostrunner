@@ -44,6 +44,8 @@ startup
 {
     vars.endLevelPause = false;
     vars.previousDeaths = 0;
+    vars.addDeathsNextLoad = 0;
+
     settings.Add("lvlSplit", true, "Split after completing a level");
     settings.Add("speedometer", false, "Show Speedometer");
     settings.Add("speedround", false, "Round to whole number", "speedometer");
@@ -125,13 +127,22 @@ update
         vars.endLevelPause = false;
 
     if (current.leaderboardShown && !old.leaderboardShown && current.map != "/Game/Levels/MainMenu/MainMenu")
+    {
         vars.endLevelPause = true;
+        vars.addDeathsNextLoad = current.deaths;
+    }
+
+    if(current.loading && vars.addDeathsNextLoad != 0)
+    {
+        vars.previousDeaths += vars.addDeathsNextLoad;
+        vars.addDeathsNextLoad = 0;
+    }
 
     if(timer.CurrentPhase != TimerPhase.Running)
+    {
         vars.previousDeaths = 0;
-
-    if(current.deaths == 0 && old.deaths > 0)
-        vars.previousDeaths += old.deaths;
+        vars.addDeathsNextLoad = 0;
+    }
 
     if(settings["speedometer"])
         vars.UpdateSpeedometer(current.xVel, current.yVel, settings["speedround"]);
