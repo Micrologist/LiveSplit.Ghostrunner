@@ -140,7 +140,7 @@ update
     if(current.deaths == old.deaths + 1 && current.preciseTime > 0.0f)
         vars.deathCount += 1;
 
-    if(timer.CurrentPhase != TimerPhase.Running)
+    if(timer.CurrentPhase == TimerPhase.NotRunning)
         vars.deathCount = 0;
 
     if(settings["speedometer"])
