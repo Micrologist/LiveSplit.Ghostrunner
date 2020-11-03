@@ -5,8 +5,6 @@ state("Ghostrunner-Win64-Shipping", "steam1")
     float xVel : 0x042E16B8, 0x30, 0x288, 0xC4;
     float yVel : 0x042E16B8, 0x30, 0x288, 0xC8;
     bool loading : 0x04417978, 0x1E8;
-    byte completedLvls : 0x0453A8B0, 0x50, 0x590, 0xF0;
-    byte completedSections : 0x0453A8B0, 0x50, 0x590, 0x118;
     string250 map : 0x042E1678, 0x30, 0xF8, 0x0;
     bool leaderboardShown : 0x042E1AC8, 0x80;
     int deaths : 0x042E1678, 0x1A8, 0x28C;
@@ -19,8 +17,6 @@ state("Ghostrunner-Win64-Shipping", "gog1")
     float xVel : 0x0430CC48, 0x30, 0x288, 0xC4;
     float yVel : 0x0430CC48, 0x30, 0x288, 0xC8;
     bool loading : 0x04443038, 0x1E8;
-    byte completedLvls : 0x04565F70, 0x50, 0x590, 0xF0;
-    byte completedSections : 0x04565F70, 0x50, 0x590, 0x118;
     string250 map : 0x0430CC10, 0x30, 0xF8, 0x0;
     bool leaderboardShown : 0x0430D058, 0x80;
     int deaths : 0x0430CC10, 0x1A8, 0x28C;
@@ -33,11 +29,21 @@ state("Ghostrunner-Win64-Shipping", "egs1")
     float xVel : 0x042EA0D0, 0x30, 0x288, 0xC4;
     float yVel : 0x042EA0D0, 0x30, 0x288, 0xC8;
     bool loading : 0x04420438, 0x1E8;
-    byte completedLvls : 0x04543370, 0x50, 0x590, 0xF0;
-    byte completedSections : 0x04543370, 0x50, 0x590, 0x118;
     string250 map : 0x042EA098, 0x30, 0xF8, 0x0;
     bool leaderboardShown : 0x042EA108, 0x80;
     int deaths : 0x042EA098, 0x1A8, 0x28C;
+}
+
+state("Ghostrunner-Win64-Shipping", "egs2")
+{
+    float preciseTime : 0x042E9098, 0x1A8, 0x284;
+    float levelTime : 0x04564320, 0x128, 0x38C;
+    float xVel : 0x042E90D0, 0x30, 0x288, 0xC4;
+    float yVel : 0x042E90D0, 0x30, 0x288, 0xC8;
+    bool loading : 0x0441F438, 0x1E8;
+    string250 map : 0x042E9098, 0x30, 0xF8, 0x0;
+    bool leaderboardShown : 0x042E9108, 0x80;
+    int deaths : 0x042E9098, 0x1A8, 0x28C;
 }
 
 startup
@@ -46,9 +52,9 @@ startup
     vars.deathCount = 0;
 
     settings.Add("lvlSplit", true, "Split after completing a level");
+    settings.Add("deathcounter", false, "Show Death Counter");
     settings.Add("speedometer", false, "Show Speedometer");
     settings.Add("speedround", false, "Round to whole number", "speedometer");
-    settings.Add("deathcounter", false, "Show Death Counter");
     
     if (timer.CurrentTimingMethod == TimingMethod.RealTime)
     {
@@ -104,6 +110,9 @@ init
             break;
         case 77885440:
             version = "egs1";
+            break;
+        case 77881344:
+            version = "egs2";
             break;
         default:
             version = "Unsupported - " + moduleSize.ToString();
