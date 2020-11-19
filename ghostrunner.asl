@@ -167,7 +167,7 @@ update
 
 start
 {
-    return (old.preciseTime == 0 && current.preciseTime > 0);
+    return (old.preciseTime == 0 && current.preciseTime > 0 && current.map == "/Game/Levels/Tutorial/L_Tutorial_Persistant");
 }
 
 split
