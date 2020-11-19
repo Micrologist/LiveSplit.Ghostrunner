@@ -58,6 +58,18 @@ state("Ghostrunner-Win64-Shipping", "egs2")
     int deaths : 0x042E9098, 0x1A8, 0x28C;
 }
 
+state("Ghostrunner-Win64-Shipping", "egs3")
+{
+    float preciseTime : 0x042F02E8, 0x1A8, 0x284;
+    float levelTime : 0x0456B6A0, 0x128, 0x38C;
+    float xVel : 0x042F0310, 0x30, 0x288, 0xC4;
+    float yVel : 0x042F0310, 0x30, 0x288, 0xC8;
+    bool loading : 0x044267B8, 0x1E8;
+    string250 map : 0x042F02E8, 0x30, 0xF8, 0x0;
+    bool leaderboardShown : 0x042F0720, 0x80;
+    int deaths : 0x042F02E8, 0x1A8, 0x28C;
+}
+
 startup
 {
     vars.endLevelPause = false;
@@ -128,6 +140,9 @@ init
             break;
         case 77881344:
             version = "egs2";
+            break;
+        case 77910016:
+            version = "egs3";
             break;
         default:
             version = "Unsupported - " + moduleSize.ToString();
