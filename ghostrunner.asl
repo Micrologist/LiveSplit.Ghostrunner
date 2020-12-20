@@ -22,6 +22,18 @@ state("Ghostrunner-Win64-Shipping", "steam3")
     int deaths : 0x042E78D0, 0x1A8, 0x28C;
 }
 
+state("Ghostrunner-Win64-Shipping", "steam5")
+{
+    float preciseTime : 0x04328548, 0x1A8, 0x284;
+    float levelTime : 0x045A3C20, 0x128, 0x38C;
+    float xVel : 0x04328538, 0x30, 0x288, 0xC4;
+    float yVel : 0x04328538, 0x30, 0x288, 0xC8;
+    bool loading : 0x0445ED38, 0x1E8;
+    string250 map : 0x04328548, 0x30, 0xF8, 0x0;
+    bool leaderboardShown : 0x04328580, 0x80;
+    int deaths : 0x04328548, 0x1A8, 0x28C;
+}
+
 state("Ghostrunner-Win64-Shipping", "gog1")
 {
     float preciseTime : 0x0430CC10, 0x1A8, 0x284;
@@ -32,6 +44,18 @@ state("Ghostrunner-Win64-Shipping", "gog1")
     string250 map : 0x0430CC10, 0x30, 0xF8, 0x0;
     bool leaderboardShown : 0x0430D058, 0x80;
     int deaths : 0x0430CC10, 0x1A8, 0x28C;
+}
+
+state("Ghostrunner-Win64-Shipping", "gog5")
+{
+    float preciseTime : 0x04328548, 0x1A8, 0x284;
+    float levelTime : 0x045A3C20, 0x128, 0x38C;
+    float xVel : 0x04328538, 0x30, 0x288, 0xC4;
+    float yVel : 0x04328538, 0x30, 0x288, 0xC8;
+    bool loading : 0x0445ED38, 0x1E8;
+    string250 map : 0x04328548, 0x30, 0xF8, 0x0;
+    bool leaderboardShown : 0x04328580, 0x80;
+    int deaths : 0x04328548, 0x1A8, 0x28C;
 }
 
 state("Ghostrunner-Win64-Shipping", "egs1")
@@ -132,9 +156,15 @@ init
         case 78086144:
             version = "steam3";
             break;
+	case 78376960:
+            version = "steam5";
+            break;	   
         case 78036992:
             version = "gog1";
             break;
+	case 78168064:
+            version = "gog5";
+            break;    
         case 77885440:
             version = "egs1";
             break;
