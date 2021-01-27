@@ -674,13 +674,34 @@ update
 					}
 				}
 			}	
-			if(vars.section == 1 || vars.section == 7 || vars.section == 8 || vars.section == 11 || vars.section == 16 || vars.section == 17 ||  vars.section == 23 ||  vars.section == 24 || vars.section == 28 || vars.section == 29 || vars.section == 30)
+			if(vars.section == 1 || vars.section == 7 || vars.section == 8 || vars.section == 11 || vars.section == 15 || vars.section == 16 || vars.section == 17 ||  vars.section == 23 ||  vars.section == 24 || vars.section == 28 || vars.section == 29 || vars.section == 30)
 				vars.reachEOL = true;
 				
+			if(vars.section == 4)
+			{	vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(0x04328538, 0x30, 0x130, 0x1D4)) { Name = "ypos" });
+				vars.watchers.UpdateAll(game);
+				if (vars.watchers["ypos"].Current > -50000.0f)
+					vars.reachEOL = true;
+			}
+			
+			if(vars.section == 9)
+			{	vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(0x04328538, 0x30, 0x130, 0x1D4)) { Name = "ypos" });
+				vars.watchers.UpdateAll(game);
+				if (vars.watchers["ypos"].Current > -75000.0f)
+					vars.reachEOL = true;
+			}
+			
 			if(vars.section == 21)
 			{	vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(0x04328538, 0x30, 0x130, 0x1D4)) { Name = "ypos" });
 				vars.watchers.UpdateAll(game);
 				if (vars.watchers["ypos"].Current < 200000.0f)
+					vars.reachEOL = true;
+			}
+			
+			if(vars.section == 25)
+			{	vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(0x04328538, 0x30, 0x130, 0x1D4)) { Name = "ypos" });
+				vars.watchers.UpdateAll(game);
+				if (vars.watchers["ypos"].Current < 0.0f)
 					vars.reachEOL = true;
 			}
 		} else 
