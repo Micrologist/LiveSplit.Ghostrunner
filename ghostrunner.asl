@@ -598,7 +598,10 @@ update
 				{	if (vars.watchers["cpx"].Current == -52000.0f && vars.watchers["cpy"].Current == 1550.021973f && vars.killsoffset == -3)
 						vars.killsoffset = 0;
 				}		
-
+				if (vars.section == 23)
+				{	if (vars.watchers["enemies"].Current == 1 && vars.fulllvlkills == 0)
+					{	vars.fulllvlkills = 1;}
+				}
 				
 			}
 		}else {	
