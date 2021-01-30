@@ -649,7 +649,7 @@ update
 		}
 	}
 
-	if (current.levelTime == current.preciseTime && current.preciseTime != old.preciseTime && current.preciseTime > 0.0f && vars.lstart)
+	if (current.levelTime == current.preciseTime && current.levelTime != old.levelTime && current.preciseTime > 0.0f && vars.lstart)
 	{	vars.lstart = false;
 		if (!settings["hardcore"])
 		{	vars.sections[vars.section, 2] = 1;
@@ -771,7 +771,7 @@ split
 		return true;
 	}
 	
-    if (current.map == "/Game/Levels/03_HIGHTECH/03_04/Cyberspace_Architect" && current.levelTime == current.preciseTime && current.preciseTime != old.preciseTime && current.preciseTime > 0.0f)
+    if (current.map == "/Game/Levels/03_HIGHTECH/03_04/Cyberspace_Architect" && current.levelTime == current.preciseTime && current.levelTime != old.levelTime && current.preciseTime > 0.0f)
         return true;
 }
 
