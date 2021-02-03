@@ -241,7 +241,7 @@ update
 			vars.bosskilled = false;
 
 			vars.watchers = new MemoryWatcherList();
-			if (version == "steam5" || version == gog5")
+			if (version == "steam5" || version == "gog5")
 				vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(0x04328538, 0x30, 0x130, 0x1D0)) { Name = "xpos" });
 			if (version == "steam3")	
 				vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(0x042E78F8, 0x30, 0x130, 0x1D0)) { Name = "xpos" });
