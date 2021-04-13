@@ -38,6 +38,20 @@ state("Ghostrunner-Win64-Shipping", "steam5")
 	float global : 0x045A3C20, 0x52C;
 }
 
+state("Ghostrunner-Win64-Shipping", "steam6")
+{
+    float preciseTime : 0x0438BB40, 0x1A8, 0x284;
+    float levelTime : 0x04609420, 0x128, 0x38C;
+    float xVel : 0x0438BB50, 0x30, 0x288, 0xC4;
+    float yVel : 0x0438BB50, 0x30, 0x288, 0xC8;
+    bool loading : 0x044C4478, 0x1E8;
+    string250 map : 0x0438BB40, 0x30, 0xF8, 0x0;
+    bool leaderboardShown : 0x0438D120, 0x80;
+    int deaths : 0x0438BB40, 0x1A8, 0x28C;
+	int killpercp : 0x0438BB50, 0x30, 0xA6C;
+	float global : 0x04609420, 0x52C;
+}
+
 state("Ghostrunner-Win64-Shipping", "gog1")
 {
     float preciseTime : 0x0430CC10, 0x1A8, 0x284;
@@ -194,27 +208,31 @@ init
     {
         case 78057472:
             version = "steam1";
-			vars.offsets =new List<int>() {0x0455C860,0x042E16B8,0x042DFEB8,0x044260F8,0x044F6200,0x0455C860,0x0448AD10,0x042E1400};
+			vars.offsets =new List<int>() {0x0455C860,0x042E16B8,0x042DFEB8,0x044260F8,0x044F6200,0x0455C860,0x0448AD10,0x042E1400,0x2B0};
             break;
         case 78086144:
             version = "steam3";
-			vars.offsets =new List<int>() {0x04562C20,0x042E78F8,0x042E60F8,0x04423298,0x044FC5C0,0x04562C20,0x044910D0,0x042E7648};
+			vars.offsets =new List<int>() {0x04562C20,0x042E78F8,0x042E60F8,0x04423298,0x044FC5C0,0x04562C20,0x044910D0,0x042E7648,0x2B0};
             break;
 		case 78376960:
             version = "steam5";
-			vars.offsets =new List<int>() {0x045A3C20,0x04328538,0x04326CF8,0x04464298,0x0453D5C0,0x045A3C20,0x044D20D0,0x043282B8};
-            break;	   
+			vars.offsets =new List<int>() {0x045A3C20,0x04328538,0x04326CF8,0x04464298,0x0453D5C0,0x045A3C20,0x044D20D0,0x043282B8,0x2B0};
+            break;	  
+		case 78856192:
+            version = "steam6";
+			vars.offsets =new List<int>() {0x04609420,0x0438BB50,0x0438BB18,0x044C99D8,0x045A2D10,0x04609420,0x04537820,0x0438D5C0,0x2C0};
+            break;	 			
         case 78036992:
             version = "gog1";
-			vars.offsets =new List<int>() {0x04587F20,0x0430CC48,0x0430B3D0,0x04448598,0x045218C0,0x04587F20,0x044B63D0,0x0430C9A0};
+			vars.offsets =new List<int>() {0x04587F20,0x0430CC48,0x0430B3D0,0x04448598,0x045218C0,0x04587F20,0x044B63D0,0x0430C9A0,0x2B0};
             break;
 		case 78065664:
             version = "gog3";
-			vars.offsets =new List<int>() {0x0458E2E0,0x04312E98,0x04311610,0x0444E958,0x04527C80,0x0458E2E0,0x044BC790,0x04312BE8};
+			vars.offsets =new List<int>() {0x0458E2E0,0x04312E98,0x04311610,0x0444E958,0x04527C80,0x0458E2E0,0x044BC790,0x04312BE8,0x2B0};
             break;
 		case 78168064:
             version = "gog5";
-			vars.offsets =new List<int>() {0x045A3C20,0x04328538,0x04326CF8,0x04464298,0x0453D5C0,0x045A3C20,0x044D20D0,0x043282B8};
+			vars.offsets =new List<int>() {0x045A3C20,0x04328538,0x04326CF8,0x04464298,0x0453D5C0,0x045A3C20,0x044D20D0,0x043282B8,0x2B0};
             break;    
         case 77885440:
             version = "egs1";
@@ -468,7 +486,7 @@ update
 						vars.fulllvlkills = 0;
 						break;
 					case 1:
-						if (version == "steam5" || version == "gog5")
+						if (version == "steam5" || version == "gog5" || version == "steam6" )
 						{	vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x28, 0x48)) { Name = "cpx" });
 							vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x28, 0x4C)) { Name = "cpy" });
 						} else
@@ -502,7 +520,7 @@ update
 						vars.watchers.UpdateAll(game);
 						break;					
 					case 16:	
-						if (version == "steam5" || version == "gog5")
+						if (version == "steam5" || version == "gog5" || version == "steam6" )
 						{	vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x60, 0x48)) { Name = "cpx" });
 							vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x60, 0x4C)) { Name = "cpy" });
 							vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x60, 0x50)) { Name = "cpz" });
@@ -510,11 +528,11 @@ update
 						{	vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x28, 0x48)) { Name = "cpx" });
 							vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x28, 0x4C)) { Name = "cpy" });
 							vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x28, 0x50)) { Name = "cpz" });}
-						vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[7], 0x28, 0x10, 0x20, 0x20, 0x2B0, 0x2B0, 0xE0, 0x10)) { Name = "bosshealth" });
+						vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[7], 0x28, 0x10, 0x20, 0x20, vars.offsets[8], 0x2B0, 0xE0, 0x10)) { Name = "bosshealth" });
 						vars.watchers.UpdateAll(game);
 						break;	
 					case 18:
-						if (version == "steam5" || version == "gog5")
+						if (version == "steam5" || version == "gog5" || version == "steam6" )
 						{	vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x138, 0x48)) { Name = "cpx" });
 							vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x138, 0x4C)) { Name = "cpy" });
 						} else
@@ -523,13 +541,13 @@ update
 						vars.watchers.UpdateAll(game);				
 						break;	
 					case 21:	
-						if (version == "steam5" || version == "gog5")
+						if (version == "steam5" || version == "gog5" || version == "steam6" )
 						{	vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x28, 0x48)) { Name = "cpx" });
 							vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x28, 0x4C)) { Name = "cpy" });
 						} else
 						{	vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x20, 0x48)) { Name = "cpx" });
 							vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x20, 0x4C)) { Name = "cpy" });}
-						vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[7], 0x28, 0x10, 0x20, 0x20, 0x2B0, 0x2B0, 0xE0, 0x10)) { Name = "bosshealth" });
+						vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[7], 0x28, 0x10, 0x20, 0x20, vars.offsets[8], 0x2B0, 0xE0, 0x10)) { Name = "bosshealth" });
 						vars.watchers.UpdateAll(game);
 						break;				
 					case 22:
@@ -541,7 +559,7 @@ update
 					case 30:	
 						vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x8, 0x48)) { Name = "cpx" });
 						vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x8, 0x4C)) { Name = "cpy" });
-						vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[7], 0x28, 0x10, 0x20, 0x20, 0x2B0, 0x2B0, 0xE0, 0x10)) { Name = "bosshealth" });
+						vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[7], 0x28, 0x10, 0x20, 0x20, vars.offsets[8], 0x2B0, 0xE0, 0x10)) { Name = "bosshealth" });
 						vars.watchers.UpdateAll(game);
 						break;				
 					default:
@@ -573,14 +591,14 @@ update
 						break;	
 					}
 				} else 
-				{	//if (version == "steam5" || version == "gog5")
+				{	//if (version == "steam5" || version == "gog5" || version == "steam6" )
 					vars.watchers.Add(new MemoryWatcher<int>(new DeepPointer(vars.offsets[3], 0xB8, 0x80, 0x8, 0x10, 0x80, 0x2C0)) { Name = "enemies" });
 					if (vars.section == 8 || vars.section == 12 || vars.section == 17)
 					{	
 						vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x60, 0x48)) { Name = "cpx" });
 						vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x60, 0x4C)) { Name = "cpy" });
 						vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x60, 0x50)) { Name = "cpz" });
-						vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(0x043282B8, 0x28, 0x10, 0x20, 0x20, 0x2B0, 0x2B0, 0xE0, 0x10)) { Name = "bosshealth" });
+						vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(0x043282B8, 0x28, 0x10, 0x20, 0x20, vars.offsets[8], 0x2B0, 0xE0, 0x10)) { Name = "bosshealth" });
 					} else if (vars.section == 0)
 					{ 	vars.fulllvlkills = 0;}
 				} 	
