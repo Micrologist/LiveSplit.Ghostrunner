@@ -91,6 +91,20 @@ state("Ghostrunner-Win64-Shipping", "gog5")
 	int killpercp : 0x04328538, 0x30, 0xA4C;
 }
 
+state("Ghostrunner-Win64-Shipping", "gog6")
+{
+    float preciseTime : 0x0438BB40, 0x1A8, 0x284;
+    float levelTime : 0x04609420, 0x128, 0x38C;
+    float xVel : 0x0438BB50, 0x30, 0x288, 0xC4;
+    float yVel : 0x0438BB50, 0x30, 0x288, 0xC8;
+    bool loading : 0x044C4478, 0x1E8;
+    string250 map : 0x0438BB40, 0x30, 0xF8, 0x0;
+    bool leaderboardShown : 0x0438D120, 0x80;
+    int deaths : 0x0438BB40, 0x1A8, 0x28C;
+	int killpercp : 0x0438BB50, 0x30, 0xA6C;
+	float global : 0x04609420, 0x52C;
+}
+
 state("Ghostrunner-Win64-Shipping", "egs1")
 {
     float preciseTime : 0x042EA098, 0x1A8, 0x284;
@@ -125,6 +139,20 @@ state("Ghostrunner-Win64-Shipping", "egs3")
     string250 map : 0x042F02E8, 0x30, 0xF8, 0x0;
     bool leaderboardShown : 0x042F0720, 0x80;
     int deaths : 0x042F02E8, 0x1A8, 0x28C;
+}
+
+state("Ghostrunner-Win64-Shipping", "es6")
+{
+    float preciseTime : 0x0438BC80, 0x1A8, 0x284;
+    float levelTime : 0x04609560, 0x128, 0x38C;
+    float xVel : 0x0438BC90, 0x30, 0x288, 0xC4;
+    float yVel : 0x0438BC90, 0x30, 0x288, 0xC8;
+    bool loading : 0x044C45B8, 0x1E8;
+    string250 map : 0x0438BC80, 0x30, 0xF8, 0x0;
+    bool leaderboardShown : 0x0438D260, 0x80;
+    int deaths : 0x0438BC80, 0x1A8, 0x28C;
+	int killpercp : 0x0438BC90, 0x30, 0xA6C;
+	float global : 0x04609560, 0x52C;
 }
 
 startup
@@ -203,7 +231,14 @@ startup
 }
 
 init
-{	int moduleSize = modules.First().ModuleMemorySize;
+{	
+	string MD5Hash;
+    using (var md5 = System.Security.Cryptography.MD5.Create())
+    using (var s = File.Open(modules.First().FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+    MD5Hash = md5.ComputeHash(s).Select(x => x.ToString("X2")).Aggregate((a, b) => a + b);
+    print(MD5Hash);
+	
+	int moduleSize = modules.First().ModuleMemorySize;
 	switch (moduleSize)
     {
         case 78057472:
@@ -218,8 +253,16 @@ init
             version = "steam5";
 			vars.offsets =new List<int>() {0x045A3C20,0x04328538,0x04326CF8,0x04464298,0x0453D5C0,0x045A3C20,0x044D20D0,0x043282B8,0x2B0};
             break;	  
-		case 78856192:
 		case 78622720:
+			if (MD5Hash == "F00658762E6E5991E16CEF1A1AF5BBCD")
+            {version = "es6";
+			vars.offsets =new List<int>() {0x04609560,0x0438BC90,0x0438BC58,0x044C9B18,0x045A2E50,0x04609560,0x04537960,0x0438D700,0x2C0};
+			} else {
+			version = "gog6";
+			vars.offsets =new List<int>() {0x04609420,0x0438BB50,0x0438BB18,0x044C99D8,0x045A2D10,0x04609420,0x04537820,0x0438D5C0,0x2C0};
+			}
+            break;	 		
+		case 78856192:
             version = "steam6";
 			vars.offsets =new List<int>() {0x04609420,0x0438BB50,0x0438BB18,0x044C99D8,0x045A2D10,0x04609420,0x04537820,0x0438D5C0,0x2C0};
             break;	 			
@@ -487,7 +530,7 @@ update
 						vars.fulllvlkills = 0;
 						break;
 					case 1:
-						if (version == "steam5" || version == "gog5" || version == "steam6" )
+						if (version == "steam5" || version == "gog5" || version == "steam6" || version == "gog6" || version == "es6")
 						{	vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x28, 0x48)) { Name = "cpx" });
 							vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x28, 0x4C)) { Name = "cpy" });
 						} else
@@ -521,7 +564,7 @@ update
 						vars.watchers.UpdateAll(game);
 						break;					
 					case 16:	
-						if (version == "steam5" || version == "gog5" || version == "steam6" )
+						if (version == "steam5" || version == "gog5" || version == "steam6" || version == "gog6" || version == "es6" )
 						{	vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x60, 0x48)) { Name = "cpx" });
 							vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x60, 0x4C)) { Name = "cpy" });
 							vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x60, 0x50)) { Name = "cpz" });
@@ -533,7 +576,7 @@ update
 						vars.watchers.UpdateAll(game);
 						break;	
 					case 18:
-						if (version == "steam5" || version == "gog5" || version == "steam6" )
+						if (version == "steam5" || version == "gog5" || version == "steam6" || version == "gog6" || version == "es6" )
 						{	vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x138, 0x48)) { Name = "cpx" });
 							vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x138, 0x4C)) { Name = "cpy" });
 						} else
@@ -542,7 +585,7 @@ update
 						vars.watchers.UpdateAll(game);				
 						break;	
 					case 21:	
-						if (version == "steam5" || version == "gog5" || version == "steam6" )
+						if (version == "steam5" || version == "gog5" || version == "steam6" || version == "gog6" || version == "es6" )
 						{	vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x28, 0x48)) { Name = "cpx" });
 							vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x28, 0x4C)) { Name = "cpy" });
 						} else
@@ -592,7 +635,7 @@ update
 						break;	
 					}
 				} else 
-				{	//if (version == "steam5" || version == "gog5" || version == "steam6" )
+				{	//if (version == "steam5" || version == "gog5" || version == "steam6" || version == "gog6" || version == "es6" )
 					vars.watchers.Add(new MemoryWatcher<int>(new DeepPointer(vars.offsets[3], 0xB8, 0x80, 0x8, 0x10, 0x80, 0x2C0)) { Name = "enemies" });
 					if (vars.section == 8 || vars.section == 12 || vars.section == 17)
 					{	
