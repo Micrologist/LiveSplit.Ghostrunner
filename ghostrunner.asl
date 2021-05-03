@@ -219,6 +219,7 @@ init
 			vars.offsets =new List<int>() {0x045A3C20,0x04328538,0x04326CF8,0x04464298,0x0453D5C0,0x045A3C20,0x044D20D0,0x043282B8,0x2B0};
             break;	  
 		case 78856192:
+		case 78622720:
             version = "steam6";
 			vars.offsets =new List<int>() {0x04609420,0x0438BB50,0x0438BB18,0x044C99D8,0x045A2D10,0x04609420,0x04537820,0x0438D5C0,0x2C0};
             break;	 			
@@ -248,7 +249,7 @@ init
             break;
         default:
             version = "Unsupported - " + moduleSize.ToString();
-            MessageBox.Show("This game version is currently not supported.", "LiveSplit Auto Splitter - Unsupported Game Version");
+            MessageBox.Show("This game version is currently not supported."+version, "LiveSplit Auto Splitter - Unsupported Game Version");
             break;
     }
 	
