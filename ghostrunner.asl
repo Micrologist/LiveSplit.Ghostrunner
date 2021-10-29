@@ -51,7 +51,47 @@ state("Ghostrunner-Win64-Shipping", "steam6")
 	int killpercp : 0x0438BB50, 0x30, 0xA6C;
 	float global : 0x04609420, 0x52C;
 }
-
+state("Ghostrunner-Win64-Shipping", "steam7")
+{
+    float preciseTime : 0x0, 0x1A8, 0x284;
+    float levelTime : 0x0, 0x128, 0x38C;
+    float xVel : 0x04668B48, 0x30, 0x288, 0xC4;
+    float yVel : 0x04668B48, 0x30, 0x288, 0xC8;
+    bool loading : 0x047A4538, 0x1E8;
+    string250 map : 0x04668B08, 0x30, 0xF8, 0x0;
+    bool leaderboardShown : 0x0, 0x80;
+    int deaths : 0x048E94D0, 0x128, 0x3B0;
+	int killpercp : 0x04668B48, 0x30, 0xA78;
+	float global : 0x048E94D0, 0x52C;
+}
+state("Ghostrunner-Win64-Shipping", "steam9")
+{
+    float preciseTime : 0x048EA4D0, 0x128, 0x3c0;
+    float levelTime : 0x048EA4D0, 0x128, 0x3b4;
+	bool bcantick : 0x048EA4D0, 0x128, 0x3c4;
+    float xVel : 0x04669B48, 0x30, 0x288, 0xC4;
+    float yVel : 0x04669B48, 0x30, 0x288, 0xC8;
+    bool loading : 0x047A5538, 0x1E8;
+    string250 map : 0x04669B08, 0x30, 0xF8, 0x0;
+    bool leaderboardShown : 0x0466B4F8, 0x80;
+    int deaths : 0x048EA4D0, 0x128, 0x3B0;
+	int killpercp : 0x04669B48, 0x30, 0xA78;
+	float global : 0x048EA4D0, 0x52C;
+}
+state("Ghostrunner-Win64-Shipping", "steam10")
+{
+    float preciseTime : 0x048F7350, 0x128, 0x3c0;
+    float levelTime : 0x048F7350, 0x128, 0x3b4;
+	bool bcantick : 0x048F7350, 0x128, 0x3c4;
+    float xVel : 0x046767E0, 0x30, 0x288, 0xC4;
+    float yVel : 0x046767E0, 0x30, 0x288, 0xC8;
+    bool loading : 0x047B23B8, 0x1E8;
+    string250 map : 0x046767F0, 0x30, 0xF8, 0x0;
+    bool leaderboardShown : 0x04678480, 0x80;
+    int deaths : 0x048F7350, 0x128, 0x3B0;
+	int killpercp : 0x046767E0, 0x30, 0xA78;
+	float global : 0x048F7350, 0x52C;
+}
 state("Ghostrunner-Win64-Shipping", "gog1")
 {
     float preciseTime : 0x0430CC10, 0x1A8, 0x284;
@@ -141,7 +181,7 @@ state("Ghostrunner-Win64-Shipping", "egs3")
     int deaths : 0x042F02E8, 0x1A8, 0x28C;
 }
 
-state("Ghostrunner-Win64-Shipping", "es6")
+state("Ghostrunner-Win64-Shipping", "egs6")
 {
     float preciseTime : 0x0438BC80, 0x1A8, 0x284;
     float levelTime : 0x04609560, 0x128, 0x38C;
@@ -156,7 +196,9 @@ state("Ghostrunner-Win64-Shipping", "es6")
 }
 
 startup
-{	vars.offsets = new List<int>() {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0};
+{	
+	vars.gameversion = 0;
+	vars.offsets = new List<int>() {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0};
 	vars.endLevelPause = false;
     vars.deathCount = 0;
 	vars.defaultcounter = false;
@@ -236,59 +278,82 @@ init
     using (var md5 = System.Security.Cryptography.MD5.Create())
     using (var s = File.Open(modules.First().FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
     MD5Hash = md5.ComputeHash(s).Select(x => x.ToString("X2")).Aggregate((a, b) => a + b);
-    print(MD5Hash);
 	
 	int moduleSize = modules.First().ModuleMemorySize;
 	switch (moduleSize)
     {
         case 78057472:
             version = "steam1";
-			vars.offsets =new List<int>() {0x0455C860,0x042E16B8,0x042DFEB8,0x044260F8,0x044F6200,0x0455C860,0x0448AD10,0x042E1400,0x2B0};
+			vars.gameversion = 1;
+			vars.offsets =new List<int>() {0x0455C860,0x042E16B8,0x042DFEB8,0x044260F8,0x044F6200,0x0455C860,0x0448AD10,0x042E1400,0x2B0,0x2B0,0x80};
             break;
         case 78086144:
             version = "steam3";
-			vars.offsets =new List<int>() {0x04562C20,0x042E78F8,0x042E60F8,0x04423298,0x044FC5C0,0x04562C20,0x044910D0,0x042E7648,0x2B0};
+			vars.gameversion = 3;
+			vars.offsets =new List<int>() {0x04562C20,0x042E78F8,0x042E60F8,0x04423298,0x044FC5C0,0x04562C20,0x044910D0,0x042E7648,0x2B0,0x2B0,0x80};
             break;
 		case 78376960:
             version = "steam5";
-			vars.offsets =new List<int>() {0x045A3C20,0x04328538,0x04326CF8,0x04464298,0x0453D5C0,0x045A3C20,0x044D20D0,0x043282B8,0x2B0};
+			vars.gameversion = 5;
+			vars.offsets =new List<int>() {0x045A3C20,0x04328538,0x04326CF8,0x04464298,0x0453D5C0,0x045A3C20,0x044D20D0,0x043282B8,0x2B0,0x2B0,0x80};
             break;	  
 		case 78622720:
 			if (MD5Hash == "F00658762E6E5991E16CEF1A1AF5BBCD")
-            {version = "es6";
-			vars.offsets =new List<int>() {0x04609560,0x0438BC90,0x0438BC58,0x044C9B18,0x045A2E50,0x04609560,0x04537960,0x0438D700,0x2C0};
+            {version = "egs6";
+			vars.gameversion = 6;
+			vars.offsets =new List<int>() {0x04609560,0x0438BC90,0x0438BC58,0x044C9B18,0x045A2E50,0x04609560,0x04537960,0x0438D700,0x2C0,0x2B0,0x80};
 			} else {
 			version = "gog6";
-			vars.offsets =new List<int>() {0x04609420,0x0438BB50,0x0438BB18,0x044C99D8,0x045A2D10,0x04609420,0x04537820,0x0438D5C0,0x2C0};
+			vars.gameversion = 6;
+			vars.offsets =new List<int>() {0x04609420,0x0438BB50,0x0438BB18,0x044C99D8,0x045A2D10,0x04609420,0x04537820,0x0438D5C0,0x2C0,0x2B0,0x80};
 			}
             break;	 		
 		case 78856192:
             version = "steam6";
-			vars.offsets =new List<int>() {0x04609420,0x0438BB50,0x0438BB18,0x044C99D8,0x045A2D10,0x04609420,0x04537820,0x0438D5C0,0x2C0};
-            break;	 			
+			vars.gameversion = 6;
+			vars.offsets =new List<int>() {0x04609420,0x0438BB50,0x0438BB18,0x044C99D8,0x045A2D10,0x04609420,0x04537820,0x0438D5C0,0x2C0,0x2B0,0x80};
+            break;	
+		case 82083840:
+		case 81846272:
+            version = "steam9";
+			vars.gameversion = 9;
+			vars.offsets =new List<int>() {0x048EA4D0,0x04669B48,0x04669B18,0x047AAA98,0x04883DD0,0x048EA4D0,0x048188E0,0x0466B0F8,0x2C0,0x2C0,0xB0};
+            break;	
+		case 82141184:
+		case 81903616:
+            version = "steam10";
+			vars.gameversion = 10;
+			vars.offsets =new List<int>() {0x048F7350,0x046767E0,0x04676800,0x047B7918,0x04890C50,0x048F7350,0x04825760,0x046781C8,0x2C0,0x2C0,0xB0};
+            break;			
         case 78036992:
             version = "gog1";
-			vars.offsets =new List<int>() {0x04587F20,0x0430CC48,0x0430B3D0,0x04448598,0x045218C0,0x04587F20,0x044B63D0,0x0430C9A0,0x2B0};
+			vars.gameversion = 1;
+			vars.offsets =new List<int>() {0x04587F20,0x0430CC48,0x0430B3D0,0x04448598,0x045218C0,0x04587F20,0x044B63D0,0x0430C9A0,0x2B0,0x2B0,0x80};
             break;
 		case 78065664:
             version = "gog3";
-			vars.offsets =new List<int>() {0x0458E2E0,0x04312E98,0x04311610,0x0444E958,0x04527C80,0x0458E2E0,0x044BC790,0x04312BE8,0x2B0};
+			vars.gameversion = 3;
+			vars.offsets =new List<int>() {0x0458E2E0,0x04312E98,0x04311610,0x0444E958,0x04527C80,0x0458E2E0,0x044BC790,0x04312BE8,0x2B0,0x2B0,0x80};
             break;
 		case 78168064:
             version = "gog5";
-			vars.offsets =new List<int>() {0x045A3C20,0x04328538,0x04326CF8,0x04464298,0x0453D5C0,0x045A3C20,0x044D20D0,0x043282B8,0x2B0};
+			vars.gameversion = 5;
+			vars.offsets =new List<int>() {0x045A3C20,0x04328538,0x04326CF8,0x04464298,0x0453D5C0,0x045A3C20,0x044D20D0,0x043282B8,0x2B0,0x2B0,0x80};
             break;    
         case 77885440:
             version = "egs1";
-			vars.offsets =new List<int>() {0x04565320,0x042EA0D0,0x0,0x0,0x0,0x0,0x0,0x0};
+			vars.gameversion = -1;
+			vars.offsets =new List<int>() {0x04565320,0x042EA0D0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0};
             break;
         case 77881344:
             version = "egs2";
-			vars.offsets =new List<int>() {0x04564320,0x042E90D0,0x0,0x0,0x0,0x0,0x0,0x0};
+			vars.gameversion = -1;
+			vars.offsets =new List<int>() {0x04564320,0x042E90D0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0};
             break;
         case 77910016:
             version = "egs3";
-			vars.offsets =new List<int>() {0x0456B6A0,0x042F0310,0x0,0x0,0x0,0x0,0x0,0x0};
+			vars.gameversion = -1;
+			vars.offsets =new List<int>() {0x0456B6A0,0x042F0310,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0};
             break;
         default:
             version = "Unsupported - " + moduleSize.ToString();
@@ -453,7 +518,8 @@ update
 					case "/Game/Levels/Tutorial/L_Tutorial_Persistant":
 						if (vars.watchers["xpos"].Current > 10000.0f)
 						{	vars.section = 2;
-							vars.killsoffset = 26;
+							if (vars.gameversion >= 9 ) {vars.killsoffset = 22;}
+							else {vars.killsoffset = 26;}
 						}else
 						{ 	vars.section = 1;
 							vars.killsoffset = 13;}
@@ -511,7 +577,7 @@ update
 						break;	
 				}
 			}
-			if(settings["killscounter"] && !version.Contains("egs"))
+			if(settings["killscounter"] && vars.gameversion != -1)
 			{	vars.lvlkills = 0;
 				vars.killsave = 0;
 				if (!settings["hardcore"]) 
@@ -530,7 +596,7 @@ update
 						vars.fulllvlkills = 0;
 						break;
 					case 1:
-						if (version == "steam5" || version == "gog5" || version == "steam6" || version == "gog6" || version == "es6")
+						if (vars.gameversion >= 5)
 						{	vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x28, 0x48)) { Name = "cpx" });
 							vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x28, 0x4C)) { Name = "cpy" });
 						} else
@@ -545,7 +611,7 @@ update
 						break;
 					case 8:	
 						vars.defaultcounter = true;
-						vars.watchers.Add(new MemoryWatcher<int>(new DeepPointer(vars.offsets[3], 0xB8, 0x80, 0x8, 0x10, 0x80, 0x2C0)) { Name = "enemies" });
+						vars.watchers.Add(new MemoryWatcher<int>(new DeepPointer(vars.offsets[3], 0xB8, vars.offsets[10], 0x8, 0x10, 0x80, 0x2C0)) { Name = "enemies" });
 						vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x48, 0x48)) { Name = "cpx" });
 						vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x48, 0x4C)) { Name = "cpy" });
 						vars.watchers.UpdateAll(game);
@@ -564,7 +630,7 @@ update
 						vars.watchers.UpdateAll(game);
 						break;					
 					case 16:	
-						if (version == "steam5" || version == "gog5" || version == "steam6" || version == "gog6" || version == "es6" )
+						if (vars.gameversion >= 5)
 						{	vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x60, 0x48)) { Name = "cpx" });
 							vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x60, 0x4C)) { Name = "cpy" });
 							vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x60, 0x50)) { Name = "cpz" });
@@ -572,11 +638,15 @@ update
 						{	vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x28, 0x48)) { Name = "cpx" });
 							vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x28, 0x4C)) { Name = "cpy" });
 							vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x28, 0x50)) { Name = "cpz" });}
-						vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[7], 0x28, 0x10, 0x20, 0x20, vars.offsets[8], 0x2B0, 0xE0, 0x10)) { Name = "bosshealth" });
+						if (vars.gameversion >= 9){
+							vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x2C0, 0x609)) { Name = "bossisalive" });
+						} else {
+							vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[7], 0x28, 0x28, vars.offsets[8], vars.offsets[9], 0xE0, 0x10)) { Name = "bosshealth" });
+						}
 						vars.watchers.UpdateAll(game);
 						break;	
 					case 18:
-						if (version == "steam5" || version == "gog5" || version == "steam6" || version == "gog6" || version == "es6" )
+						if (vars.gameversion >= 5)
 						{	vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x138, 0x48)) { Name = "cpx" });
 							vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x138, 0x4C)) { Name = "cpy" });
 						} else
@@ -585,13 +655,17 @@ update
 						vars.watchers.UpdateAll(game);				
 						break;	
 					case 21:	
-						if (version == "steam5" || version == "gog5" || version == "steam6" || version == "gog6" || version == "es6" )
+						if (vars.gameversion >= 5)
 						{	vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x28, 0x48)) { Name = "cpx" });
 							vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x28, 0x4C)) { Name = "cpy" });
 						} else
 						{	vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x20, 0x48)) { Name = "cpx" });
 							vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x20, 0x4C)) { Name = "cpy" });}
-						vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[7], 0x28, 0x10, 0x20, 0x20, vars.offsets[8], 0x2B0, 0xE0, 0x10)) { Name = "bosshealth" });
+						if (vars.gameversion >= 9){
+							vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x280, 0x609)) { Name = "bossisalive" });
+						} else {
+							vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[7], 0x28, 0x28, vars.offsets[8], vars.offsets[9], 0xE0, 0x10)) { Name = "bosshealth" });
+						}
 						vars.watchers.UpdateAll(game);
 						break;				
 					case 22:
@@ -603,11 +677,15 @@ update
 					case 30:	
 						vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x8, 0x48)) { Name = "cpx" });
 						vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x8, 0x4C)) { Name = "cpy" });
-						vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[7], 0x28, 0x10, 0x20, 0x20, vars.offsets[8], 0x2B0, 0xE0, 0x10)) { Name = "bosshealth" });
+						if (vars.gameversion >= 9){
+							vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x20, 0x609)) { Name = "bossisalive" });
+						} else {
+							vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[7], 0x28, 0x28, vars.offsets[8], vars.offsets[9], 0xE0, 0x10)) { Name = "bosshealth" });
+						}
 						vars.watchers.UpdateAll(game);
 						break;				
 					default:
-						vars.watchers.Add(new MemoryWatcher<int>(new DeepPointer(vars.offsets[3], 0xB8, 0x80, 0x8, 0x10, 0x80, 0x2C0)) { Name = "enemies" });
+						vars.watchers.Add(new MemoryWatcher<int>(new DeepPointer(vars.offsets[3], 0xB8, vars.offsets[10], 0x8, 0x10, 0x80, 0x2C0)) { Name = "enemies" });
 						vars.defaultcounter = true;
 						break;	
 					}
@@ -635,14 +713,24 @@ update
 						break;	
 					}
 				} else 
-				{	//if (version == "steam5" || version == "gog5" || version == "steam6" || version == "gog6" || version == "es6" )
-					vars.watchers.Add(new MemoryWatcher<int>(new DeepPointer(vars.offsets[3], 0xB8, 0x80, 0x8, 0x10, 0x80, 0x2C0)) { Name = "enemies" });
+				{	vars.watchers.Add(new MemoryWatcher<int>(new DeepPointer(vars.offsets[3], 0xB8, vars.offsets[10], 0x8, 0x10, 0x80, 0x2C0)) { Name = "enemies" });
 					if (vars.section == 8 || vars.section == 12 || vars.section == 17)
 					{	
 						vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x60, 0x48)) { Name = "cpx" });
 						vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x60, 0x4C)) { Name = "cpy" });
 						vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x60, 0x50)) { Name = "cpz" });
-						vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(0x043282B8, 0x28, 0x10, 0x20, 0x20, vars.offsets[8], 0x2B0, 0xE0, 0x10)) { Name = "bosshealth" });
+						
+						if (vars.gameversion < 9) {
+							vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[7], 0x28, 0x28, vars.offsets[8], vars.offsets[9], 0xE0, 0x10)) { Name = "bosshealth" });
+						} else if (vars.gameversion == 9){
+							if (vars.section == 8) {vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x5E0, 0x609)) { Name = "bossisalive" });}
+							if (vars.section == 12) {vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x4C0, 0x609)) { Name = "bossisalive" });}
+							if (vars.section == 17) {vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x220, 0x609)) { Name = "bossisalive" });}
+						} else {
+							if (vars.section == 8) {vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x2C0, 0x609)) { Name = "bossisalive" });}
+							if (vars.section == 12) {vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x4C0, 0x609)) { Name = "bossisalive" });}
+							if (vars.section == 17) {vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x220, 0x609)) { Name = "bossisalive" });}
+						}
 					} else if (vars.section == 0)
 					{ 	vars.fulllvlkills = 0;}
 				} 	
@@ -651,7 +739,7 @@ update
 	}
 	
 	
-	if(settings["killscounter"] && !version.Contains("egs"))
+	if(settings["killscounter"] && vars.gameversion != -1)
 	{	if (vars.lstart)
 		{	vars.watchers.UpdateAll(game);}
 		
@@ -664,7 +752,7 @@ update
 				if(current.killpercp > 0 && (vars.watchers["cpx"].Current != vars.watchers["cpx"].Old || vars.watchers["cpy"].Current != vars.watchers["cpy"].Old))
 					vars.killsave = current.killpercp;
 	
-				if(current.killpercp > 0 && (current.levelTime == current.preciseTime && current.preciseTime != old.preciseTime && current.preciseTime > 0.0f))
+				if(current.killpercp > 0 && (current.levelTime == current.preciseTime && current.preciseTime != old.preciseTime && current.preciseTime > 0.0f) && ((vars.gameversion >= 9 && !current.bcantick) || vars.gameversion < 9))
 					vars.killsave = current.killpercp;	
 		
 				if(current.killpercp == 0 && old.killpercp > 0 && vars.lstart)	
@@ -679,13 +767,17 @@ update
 				}
 	
 				if (vars.section == 16)
-				{	if (vars.watchers["cpx"].Current == 55920.62891f && vars.watchers["cpy"].Current == 25733.92188f && vars.watchers["cpz"].Current == -20644.0f && vars.watchers["bosshealth"].Current <= 0.112f && vars.lvlkills == 0)
+				{	if (vars.gameversion < 9 && vars.watchers["cpx"].Current == 55920.62891f && vars.watchers["cpy"].Current == 25733.92188f && vars.watchers["cpz"].Current == -20644.0f && vars.watchers["bosshealth"].Current <= 0.112f && vars.lvlkills == 0)
 					{ 	vars.lvlkills += 1;}
+					if (vars.gameversion >= 9 && !vars.watchers["bossisalive"].Current && vars.lvlkills == 0) 
+					{ vars.lvlkills += 1;}
 				}
 	
 				if (vars.section == 21)
-				{	if (vars.watchers["bosshealth"].Current == 0.0f && vars.watchers["bosshealth"].Old == 0.25f && vars.lvlkills == 0)
+				{	if (vars.gameversion < 9 && vars.watchers["bosshealth"].Current == 0.0f && vars.watchers["bosshealth"].Old == 0.25f && vars.lvlkills == 0)
 					{ 	vars.lvlkills += 1;}
+					if (vars.gameversion >= 9 && !vars.watchers["bossisalive"].Current && vars.lvlkills == 0) 
+					{ vars.lvlkills += 1;}
 				}
 	
 				if (vars.section == 22)
@@ -698,8 +790,10 @@ update
 				}
 	
 				if (vars.section == 30)
-				{	if (vars.watchers["bosshealth"].Current == 0.0f && vars.watchers["bosshealth"].Old > 0.32f && vars.watchers["bosshealth"].Old < 0.34f && vars.lvlkills == 0)
+				{	if (vars.gameversion < 9 && vars.watchers["bosshealth"].Current == 0.0f && vars.watchers["bosshealth"].Old > 0.32f && vars.watchers["bosshealth"].Old < 0.34f && vars.lvlkills == 0)
 					{ 	vars.lvlkills += 1;}
+					if (vars.gameversion >= 9 && !vars.watchers["bossisalive"].Current && vars.lvlkills == 0) 
+					{ vars.lvlkills += 1;}
 				}
 			
 			
@@ -736,7 +830,9 @@ update
 				{	vars.lvlkills = vars.fulllvlkills - vars.watchers["enemies"].Current + vars.killsoffset+1;}
 				else{	vars.lvlkills = vars.fulllvlkills - vars.watchers["enemies"].Current + vars.killsoffset;}
 				
-				if (vars.watchers["cpx"].Current == 55920.62891f && vars.watchers["cpx"].Current != vars.watchers["cpx"].Old && vars.watchers["cpy"].Current == 25733.92188f && vars.watchers["cpz"].Current == -20644.0f && vars.watchers["bosshealth"].Current <= 0.112f && !vars.bosskilled)
+				if (vars.gameversion < 9 && vars.watchers["cpx"].Current == 55920.62891f && vars.watchers["cpx"].Current != vars.watchers["cpx"].Old && vars.watchers["cpy"].Current == 25733.92188f && vars.watchers["cpz"].Current == -20644.0f && vars.watchers["bosshealth"].Current <= 0.112f && !vars.bosskilled)
+				{ 	vars.bosskilled = true;}
+				if (vars.gameversion >= 9 && !vars.watchers["bossisalive"].Current && !vars.bosskilled) 
 				{ 	vars.bosskilled = true;}
 			}
 			
@@ -744,9 +840,12 @@ update
 			{	if (!vars.bosskilled)
 				{	vars.lvlkills = vars.fulllvlkills - vars.watchers["enemies"].Current + vars.killsoffset;}
 				
-				if (vars.watchers["bosshealth"].Current == 0.0f && vars.watchers["bosshealth"].Old == 0.25f && !vars.bosskilled)
+				if (vars.gameversion < 9 && vars.watchers["bosshealth"].Current == 0.0f && vars.watchers["bosshealth"].Old == 0.25f && !vars.bosskilled)
 				{ 	vars.bosskilled = true;
 					vars.lvlkills += 1;}
+				if (vars.gameversion >= 9 && !vars.watchers["bossisalive"].Current && !vars.bosskilled) 
+				{ 	vars.bosskilled = true;	}	
+					
 			}
 			
 			if (vars.section == 13)
@@ -757,19 +856,23 @@ update
 				{	vars.lvlkills = vars.fulllvlkills - vars.watchers["enemies"].Current + vars.killsoffset+1;}
 				else{	vars.lvlkills = vars.fulllvlkills - vars.watchers["enemies"].Current + vars.killsoffset;}
 				
-				if (vars.watchers["bosshealth"].Current == 0.0f && vars.watchers["bosshealth"].Old > 0.32f && vars.watchers["bosshealth"].Old < 0.34f && !vars.bosskilled)
+				if (vars.gameversion < 9 && vars.watchers["bosshealth"].Current == 0.0f && vars.watchers["bosshealth"].Old > 0.32f && vars.watchers["bosshealth"].Old < 0.34f && !vars.bosskilled)
 				{ 	vars.bosskilled = true;
 					vars.lvlkills = vars.fulllvlkills - vars.watchers["enemies"].Current + vars.killsoffset+1;
 				}
+				if (vars.gameversion >= 9 && !vars.watchers["bossisalive"].Current && !vars.bosskilled) 
+				{ 	vars.bosskilled = true;
+					vars.lvlkills = vars.fulllvlkills - vars.watchers["enemies"].Current + vars.killsoffset+1;}
+				
 			}
 		}
 	}
 	
-	if (current.levelTime == current.preciseTime && current.preciseTime == old.preciseTime && current.preciseTime > 0.0f && vars.lstart)
+	if (current.levelTime == current.preciseTime && current.preciseTime == old.preciseTime && current.preciseTime > 0.0f && vars.lstart && ((vars.gameversion >= 9 && !current.bcantick) || vars.gameversion < 9))
 	{	vars.lstart = false;
 		if (!settings["hardcore"])
 		{	vars.sections[vars.section, 2] = 1;
-			if(settings["killscounter"] && !version.Contains("egs"))
+			if(settings["killscounter"] && vars.gameversion != -1)
 			{	
 				if (vars.sections[vars.section, 0] == 0)
 				{	vars.sections[vars.section, 0] = vars.lvlkills;
@@ -845,7 +948,7 @@ update
     if(settings["deathcounter"])
 		vars.SetTextComponent("Deaths", (vars.deathCount).ToString());
 		
-	if(settings["killscounter"] && !version.Contains("egs"))
+	if(settings["killscounter"] && vars.gameversion != -1)
 	{	if (!settings["hardcore"])
 		{	vars.SetTextComponent("Kills", (vars.lvlkills).ToString()+"/"+(vars.fulllvlkills).ToString()+"             "+(vars.killCount).ToString()+"/"+(vars.sections[0,1]).ToString());
 		} else
@@ -858,6 +961,8 @@ start
 	vars.endLevelPause = false;
     vars.deathCount = 0;
 	vars.killCount = 0;
+	vars.killsave = 0;
+	vars.lvlkills = 0;
 	vars.sections = new int[32, 3] { {0, 505, 0}, {0, 13, 0}, {0, 9, 0}, {0, 0, 0}, {0, 27, 0}, {0, 0, 0}, {0, 10, 0},
 	{0, 22, 0}, {0, 21, 0}, {0, 50, 0}, {0, 0, 0}, {0, 2, 0}, {0, 38, 0},
 	{0, 0, 0}, {0, 7, 0}, {0, 20, 0}, {0, 1, 0}, {0, 34, 0}, {0, 60, 0},
@@ -867,7 +972,7 @@ start
 	{0, 13, 0},	{0, 60, 0}, {0, 38, 0}, {0, 65, 0}, {0, 67, 0},
 	{0, 40, 0}, {0, 5, 0}, {0, 48, 0}, {0, 87, 0}, {0, 31, 0}, {0, 6, 0}, {0, 0, 0},
 	{0, 58, 0}, {0, 65, 0}, {0, 91, 0}, {0, 17, 0}, {0, 0, 0}};
-    return (old.preciseTime == 0 && current.preciseTime > 0 && vars.section == 1);
+    return (old.preciseTime == 0 && current.preciseTime > 0 && vars.section == 1 && current.map != "/Game/Levels/MainMenu/MainMenu");
 }
 
 split
