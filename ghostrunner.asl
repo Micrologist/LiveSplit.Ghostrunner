@@ -518,7 +518,7 @@ update
 					case "/Game/Levels/Tutorial/L_Tutorial_Persistant":
 						if (vars.watchers["xpos"].Current > 10000.0f)
 						{	vars.section = 2;
-							if (vars.gameversion >= 9 ) {vars.killsoffset = 22;}
+							if (vars.gameversion == 9 ) {vars.killsoffset = 22;}
 							else {vars.killsoffset = 26;}
 						}else
 						{ 	vars.section = 1;
