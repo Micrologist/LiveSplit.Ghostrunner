@@ -766,7 +766,7 @@ update
 	
 	if(settings["killscounter"] && vars.gameversion != -1)
 	{	if (vars.lstart)
-		{	vars.watchers.UpdateAll(game);}
+		{	vars.watchers.UpdateAll(game);
 		
 		if (!settings["hardcore"])
 		{	if (!vars.defaultcounter)
@@ -890,6 +890,7 @@ update
 					vars.lvlkills = vars.fulllvlkills - vars.watchers["enemies"].Current + vars.killsoffset+1;}
 				
 			}
+		}
 		}
 	}
 	
