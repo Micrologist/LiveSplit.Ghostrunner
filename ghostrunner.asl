@@ -92,6 +92,20 @@ state("Ghostrunner-Win64-Shipping", "steam10")
 	int killpercp : 0x046767E0, 0x30, 0xA78;
 	float global : 0x048F7350, 0x52C;
 }
+state("Ghostrunner-Win64-Shipping", "steam11")
+{
+    float preciseTime : 0x0491DB20, 0x128, 0x3c0;
+    float levelTime : 0x0491DB20, 0x128, 0x3b4;
+	bool bcantick : 0x0491DB20, 0x128, 0x3c4;
+    float xVel : 0x0469B9F0, 0x30, 0x288, 0xC4;
+    float yVel : 0x0469B9F0, 0x30, 0x288, 0xC8;
+    bool loading : 0x047D7978, 0x1E8;
+    string250 map : 0x469B9F8, 0x30, 0xF8, 0x0;
+    bool leaderboardShown : 0x0469D680, 0x80;
+    int deaths : 0x0491DB20, 0x128, 0x3B0;
+	int killpercp : 0x0469B9F0, 0x30, 0xA80;
+	float global : 0x0491DB20, 0x52C;
+}
 state("Ghostrunner-Win64-Shipping", "gog1")
 {
     float preciseTime : 0x0430CC10, 0x1A8, 0x284;
@@ -324,7 +338,13 @@ init
             version = "steam10";
 			vars.gameversion = 10;
 			vars.offsets =new List<int>() {0x048F7350,0x046767E0,0x04676800,0x047B7918,0x04890C50,0x048F7350,0x04825760,0x046781C8,0x2C0,0x2C0,0xB0};
-            break;			
+            break;
+		case 82309120:
+		case 82071552:
+            version = "steam11";
+			vars.gameversion = 11;
+			vars.offsets =new List<int>() {0x0491DB20,0x0469B9F0,0x0469B9B8,0x047DCED8,0x048B73F0,0x0491DB20,0x0484AD20,0x0,0x0,0x0,0xB0};
+            break;				
         case 78036992:
             version = "gog1";
 			vars.gameversion = 1;
@@ -727,7 +747,12 @@ update
 							if (vars.section == 12) {vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x4C0, 0x609)) { Name = "bossisalive" });}
 							if (vars.section == 17) {vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x220, 0x609)) { Name = "bossisalive" });}
 						} else {
-							if (vars.section == 8) {vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x2C0, 0x609)) { Name = "bossisalive" });}
+							
+							
+							if (vars.section == 8) {
+								if(vars.gameversion==11){vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x5e0, 0x609)) { Name = "bossisalive" });}
+								else{vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x2C0, 0x609)) { Name = "bossisalive" });}
+							}
 							if (vars.section == 12) {vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x4C0, 0x609)) { Name = "bossisalive" });}
 							if (vars.section == 17) {vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x220, 0x609)) { Name = "bossisalive" });}
 						}
@@ -813,7 +838,7 @@ update
 			}
 		}else {	
 			if (vars.section != 1 && vars.section != 8 && vars.section != 12 && vars.section != 17 )
-				vars.lvlkills = vars.fulllvlkills - vars.watchers["enemies"].Current + vars.killsoffset;
+				{vars.lvlkills = vars.fulllvlkills - vars.watchers["enemies"].Current + vars.killsoffset;}
 			
 			if (vars.section == 1)
 			{	if (current.levelTime != 0.0f)
