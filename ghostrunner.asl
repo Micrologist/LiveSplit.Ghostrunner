@@ -113,6 +113,19 @@ state("Ghostrunner-Win64-Shipping", "steam12")
     int deaths : 0x05196A60, 0x118, 0x3B0;
 	int killpercp : 0x04F9D358, 0x30, 0xA80;
 }
+state("Ghostrunner-Win64-Shipping", "gog12")
+{
+    float preciseTime : 0x05196A70, 0x118, 0x3c0;
+    float levelTime : 0x05196A70, 0x118, 0x3b4;
+	bool bcantick : 0x05196A70, 0x118, 0x3c4;
+    float xVel : 0x04F9D358, 0x30, 0x288, 0xC4;
+    float yVel : 0x04F9D358, 0x30, 0x288, 0xC8;
+    bool loading : 0x05059AE0, 0x1E8;
+    string250 map : 0x04F9D308, 0x30, 0xF8, 0x0;
+    bool leaderboardShown : 0x04F9F080, 0x80;
+    int deaths : 0x05196A70, 0x118, 0x3B0;
+	int killpercp : 0x04F9D358, 0x30, 0xA80;
+}
 state("Ghostrunner-Win64-Shipping", "gog1")
 {
     float preciseTime : 0x0430CC10, 0x1A8, 0x284;
@@ -355,6 +368,11 @@ init
 			vars.gameversion = 11;
 			vars.offsets =new List<int>() {0x0491DB20,0x0469B9F0,0x0469B9B8,0x047DCED8,0x048B73F0,0x0491DB20,0x0484AD20,0x0,0x0,0x0,0xB0};
             break;		
+		case 91336704:
+			version = "gog12";
+			vars.gameversion = 12;
+			vars.offsets =new List<int>() {0x05196A70,0x04F9D358,0x04F9D328,0x05068E48,0x0512BAD0,0x05196A70,0x050BF2F0,0x0,0x0,0x0,0x80};
+			break;	
 		case 91574272:
             version = "steam12";
 			vars.gameversion = 12;
