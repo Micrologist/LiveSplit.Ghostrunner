@@ -49,18 +49,6 @@ state("Ghostrunner-Win64-Shipping", "steam6")
     int deaths : 0x0438BB40, 0x1A8, 0x28C;
 	int killpercp : 0x0438BB50, 0x30, 0xA6C;
 }
-state("Ghostrunner-Win64-Shipping", "steam7")
-{
-    float preciseTime : 0x0, 0x1A8, 0x284;
-    float levelTime : 0x0, 0x128, 0x38C;
-    float xVel : 0x04668B48, 0x30, 0x288, 0xC4;
-    float yVel : 0x04668B48, 0x30, 0x288, 0xC8;
-    bool loading : 0x047A4538, 0x1E8;
-    string250 map : 0x04668B08, 0x30, 0xF8, 0x0;
-    bool leaderboardShown : 0x0, 0x80;
-    int deaths : 0x048E94D0, 0x128, 0x3B0;
-	int killpercp : 0x04668B48, 0x30, 0xA78;
-}
 state("Ghostrunner-Win64-Shipping", "steam9")
 {
     float preciseTime : 0x048EA4D0, 0x128, 0x3c0;
@@ -230,7 +218,7 @@ state("Ghostrunner-Win64-Shipping", "egs6")
 }
 
 startup
-{	
+{	vars.tryreset = false;
 	vars.gameversion = 0;
 	vars.offsets = new List<int>() {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0};
 	vars.endLevelPause = false;
@@ -260,12 +248,15 @@ startup
 	{0, 13, 0},	{0, 60, 0}, {0, 38, 0}, {0, 65, 0}, {0, 67, 0},
 	{0, 40, 0}, {0, 5, 0}, {0, 48, 0}, {0, 87, 0}, {0, 31, 0}, {0, 6, 0}, {0, 0, 0},
 	{0, 58, 0}, {0, 65, 0}, {0, 91, 0}, {0, 17, 0}, {0, 0, 0}};
+	vars.ILsections = new int[17] {1,2,4,8,9,12,15,16,17,18,20,21,24,25,29,30,31};
+	vars.ILsectionshard = new int[17] {1,2,3,4,5,6,7,8,9,10,11,12,14,15,16,17,18};
 
     settings.Add("lvlSplit", true, "Split after completing a level");
     settings.Add("deathcounter", false, "Show Death Counter");
     settings.Add("speedometer", false, "Show Speedometer");
     settings.Add("speedround", false, "Round to whole number", "speedometer");
 	settings.Add("killscounter", false, "Show Kills Counter");
+	settings.Add("ILKC", false, "IL Kills Counter", "killscounter");
 	settings.Add("hardcore", false, "Check for a hardcore run");
     
     if (timer.CurrentTimingMethod == TimingMethod.RealTime)
@@ -446,6 +437,14 @@ update
 		vars.lstart = false;
 	
 	
+	vars.tryreset = false;
+	if (settings["ILKC"] && old.loading && !current.loading){
+		if (timer.CurrentPhase == TimerPhase.Ended) {
+		timer.CurrentPhase = TimerPhase.Running;
+		}
+		vars.lstart = false;
+		vars.tryreset = true;
+	}
 	
 	if (old.loading && !current.loading && !vars.lstart && current.map != "/Game/Levels/MainMenu/MainMenu")
 	{	vars.watchers = new MemoryWatcherList();
@@ -676,7 +675,6 @@ update
 						break;
 					case 8:	
 						vars.defaultcounter = true;
-						//vars.watchers.Add(new MemoryWatcher<int>(new DeepPointer(vars.offsets[3], 0xB8, vars.offsets[10], 0x8, 0x10, 0x80, 0x2C0)) { Name = "enemies" });
 						vars.watchers.Add(new MemoryWatcher<int>(vars.enemies) { Name = "enemies" });
 						vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x48, 0x48)) { Name = "cpx" });
 						vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x48, 0x4C)) { Name = "cpy" });
@@ -692,7 +690,6 @@ update
 						vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x0, 0x48)) { Name = "cpx" });
 						vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x0, 0x4C)) { Name = "cpy" });
 						vars.watchers.Add(new MemoryWatcher<int>(new DeepPointer(vars.offsets[4], 0x8, 0x0, 0x298, 0x790, 0x2A0)) { Name = "tempestkills" });
-						//vars.watchers.Add(new MemoryWatcher<int>(new DeepPointer(vars.offsets[5], 0x1F8, 0x15C)) { Name = "tempestblocks" });
 						vars.watchers.Add(new MemoryWatcher<int>(vars.tempestblocks) { Name = "tempestblocks" });
 						vars.watchers.UpdateAll(game);
 						break;					
@@ -709,6 +706,8 @@ update
 							vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x128, 0xB0, 0xB0, 0x2C0, 0x609)) { Name = "bossisalive" });
 						} else if (vars.gameversion >= 9) {
 							vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x2C0, 0x609)) { Name = "bossisalive" });
+						}  else if (vars.gameversion >= 6) {
+							vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x2C0, 0x5e1)) { Name = "bossisalive" });
 						} else {
 							vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[7], 0x28, 0x28, vars.offsets[8], vars.offsets[9], 0xE0, 0x10)) { Name = "bosshealth" });
 						}
@@ -734,6 +733,8 @@ update
 							vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x128, 0xB0, 0xB0, 0x280, 0x609)) { Name = "bossisalive" });
 						} else if (vars.gameversion >= 9) {
 							vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x280, 0x609)) { Name = "bossisalive" });
+						} else if (vars.gameversion >= 6) {
+							vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x280, 0x5e1)) { Name = "bossisalive" });
 						} else {
 							vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[7], 0x28, 0x28, vars.offsets[8], vars.offsets[9], 0xE0, 0x10)) { Name = "bosshealth" });
 						}
@@ -742,7 +743,6 @@ update
 					case 22:
 						vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x0, 0x48)) { Name = "cpx" });
 						vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x0, 0x4C)) { Name = "cpy" });
-						//vars.watchers.Add(new MemoryWatcher<int>(new DeepPointer(vars.offsets[6], 0xCB0)) { Name = "surgeblocks" });
 						vars.watchers.Add(new MemoryWatcher<int>(vars.surgeblocks) { Name = "surgeblocks" });
 						vars.watchers.UpdateAll(game);
 						break;		
@@ -753,13 +753,14 @@ update
 							vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x128, 0xB0, 0xB0, 0x20, 0x609)) { Name = "bossisalive" });
 						} else if (vars.gameversion >= 9){
 							vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x20, 0x609)) { Name = "bossisalive" });
+						} else if (vars.gameversion >= 6){
+							vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x20, 0x5e1)) { Name = "bossisalive" });
 						} else {
 							vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[7], 0x28, 0x28, vars.offsets[8], vars.offsets[9], 0xE0, 0x10)) { Name = "bosshealth" });
 						}
 						vars.watchers.UpdateAll(game);
 						break;				
 					default:
-						//vars.watchers.Add(new MemoryWatcher<int>(new DeepPointer(vars.offsets[3], 0xB8, vars.offsets[10], 0x8, 0x10, 0x80, 0x2C0)) { Name = "enemies" });
 						vars.watchers.Add(new MemoryWatcher<int>(vars.enemies) { Name = "enemies" });
 						vars.defaultcounter = true;
 						break;	
@@ -788,33 +789,28 @@ update
 						break;	
 					}
 				} else 
-				{	//vars.watchers.Add(new MemoryWatcher<int>(new DeepPointer(vars.offsets[3], 0xB8, vars.offsets[10], 0x8, 0x10, 0x80, 0x2C0)) { Name = "enemies" });
-					vars.watchers.Add(new MemoryWatcher<int>(vars.enemies) { Name = "enemies" });
+				{	vars.watchers.Add(new MemoryWatcher<int>(vars.enemies) { Name = "enemies" });
 					if (vars.section == 8 || vars.section == 12 || vars.section == 17)
 					{	
 						vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x60, 0x48)) { Name = "cpx" });
 						vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x60, 0x4C)) { Name = "cpy" });
 						vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[2], 0x28, 0x60, 0x50)) { Name = "cpz" });
 						
-						if (vars.gameversion < 9) {
+						if (vars.gameversion < 6) {
 							vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[7], 0x28, 0x28, vars.offsets[8], vars.offsets[9], 0xE0, 0x10)) { Name = "bosshealth" });
+						} else if (vars.gameversion == 6){
+							if (vars.section == 8) {vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x5E0, 0x5e1)) { Name = "bossisalive" });}
+							if (vars.section == 12) {vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x128, 0xB0, 0xB0, 0x4C0, 0x5e1)) { Name = "bossisalive" });}
+							if (vars.section == 17) {vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x128, 0xB0, 0xB0, 0x220, 0x5e1)) { Name = "bossisalive" });}
 						} else if (vars.gameversion == 9){
 							if (vars.section == 8) {vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x5E0, 0x609)) { Name = "bossisalive" });}
 							if (vars.section == 12) {vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x4C0, 0x609)) { Name = "bossisalive" });}
 							if (vars.section == 17) {vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x220, 0x609)) { Name = "bossisalive" });}
 						} else if (vars.gameversion == 12){
-							
-							
-							if (vars.section == 8) {
-								vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x128, 0xB0, 0xB0, 0x5E0, 0x609)) { Name = "bossisalive" });
-								//if(vars.gameversion==11){vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x5e0, 0x609)) { Name = "bossisalive" });}
-								//else{vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x2C0, 0x609)) { Name = "bossisalive" });}
-							}
+							if (vars.section == 8) {vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x128, 0xB0, 0xB0, 0x5E0, 0x609)) { Name = "bossisalive" });	}
 							if (vars.section == 12) {vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x128, 0xB0, 0xB0, 0x4C0, 0x609)) { Name = "bossisalive" });}
 							if (vars.section == 17) {vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x128, 0xB0, 0xB0, 0x220, 0x609)) { Name = "bossisalive" });}
 						} else {
-							
-							
 							if (vars.section == 8) {
 								if(vars.gameversion==11){vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x5e0, 0x609)) { Name = "bossisalive" });}
 								else{vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x2C0, 0x609)) { Name = "bossisalive" });}
@@ -858,16 +854,16 @@ update
 				}
 	
 				if (vars.section == 16)
-				{	if (vars.gameversion < 9 && vars.watchers["cpx"].Current == 55920.62891f && vars.watchers["cpy"].Current == 25733.92188f && vars.watchers["cpz"].Current == -20644.0f && vars.watchers["bosshealth"].Current <= 0.112f && vars.lvlkills == 0)
+				{	if (vars.gameversion < 6 && vars.watchers["cpx"].Current == 55920.62891f && vars.watchers["cpy"].Current == 25733.92188f && vars.watchers["cpz"].Current == -20644.0f && vars.watchers["bosshealth"].Current <= 0.112f && vars.lvlkills == 0)
 					{ 	vars.lvlkills += 1;}
-					if (vars.gameversion >= 9 && !vars.watchers["bossisalive"].Current && vars.lvlkills == 0) 
+					if (vars.gameversion >= 6 && !vars.watchers["bossisalive"].Current && vars.lvlkills == 0) 
 					{ vars.lvlkills += 1;}
 				}
 	
 				if (vars.section == 21)
-				{	if (vars.gameversion < 9 && vars.watchers["bosshealth"].Current == 0.0f && vars.watchers["bosshealth"].Old == 0.25f && vars.lvlkills == 0)
+				{	if (vars.gameversion < 6 && vars.watchers["bosshealth"].Current == 0.0f && vars.watchers["bosshealth"].Old == 0.25f && vars.lvlkills == 0)
 					{ 	vars.lvlkills += 1;}
-					if (vars.gameversion >= 9 && !vars.watchers["bossisalive"].Current && vars.lvlkills == 0) 
+					if (vars.gameversion >= 6 && !vars.watchers["bossisalive"].Current && vars.lvlkills == 0) 
 					{ vars.lvlkills += 1;}
 				}
 	
@@ -881,13 +877,11 @@ update
 				}
 	
 				if (vars.section == 30)
-				{	if (vars.gameversion < 9 && vars.watchers["bosshealth"].Current == 0.0f && vars.watchers["bosshealth"].Old > 0.32f && vars.watchers["bosshealth"].Old < 0.34f && vars.lvlkills == 0)
+				{	if (vars.gameversion < 6 && vars.watchers["bosshealth"].Current == 0.0f && vars.watchers["bosshealth"].Old > 0.32f && vars.watchers["bosshealth"].Old < 0.34f && vars.lvlkills == 0)
 					{ 	vars.lvlkills += 1;}
-					if (vars.gameversion >= 9 && !vars.watchers["bossisalive"].Current && vars.lvlkills == 0) 
+					if (vars.gameversion >= 6 && !vars.watchers["bossisalive"].Current && vars.lvlkills == 0) 
 					{ vars.lvlkills += 1;}
 				}
-			
-			
 			} else 
 			{	vars.lvlkills = vars.fulllvlkills - vars.watchers["enemies"].Current + vars.killsoffset;
 				if (vars.section == 19 || vars.section == 27)
@@ -921,9 +915,9 @@ update
 				{	vars.lvlkills = vars.fulllvlkills - vars.watchers["enemies"].Current + vars.killsoffset+1;}
 				else{	vars.lvlkills = vars.fulllvlkills - vars.watchers["enemies"].Current + vars.killsoffset;}
 				
-				if (vars.gameversion < 9 && vars.watchers["cpx"].Current == 55920.62891f && vars.watchers["cpx"].Current != vars.watchers["cpx"].Old && vars.watchers["cpy"].Current == 25733.92188f && vars.watchers["cpz"].Current == -20644.0f && vars.watchers["bosshealth"].Current <= 0.112f && !vars.bosskilled)
+				if (vars.gameversion < 6 && vars.watchers["cpx"].Current == 55920.62891f && vars.watchers["cpx"].Current != vars.watchers["cpx"].Old && vars.watchers["cpy"].Current == 25733.92188f && vars.watchers["cpz"].Current == -20644.0f && vars.watchers["bosshealth"].Current <= 0.112f && !vars.bosskilled)
 				{ 	vars.bosskilled = true;}
-				if (vars.gameversion >= 9 && !vars.watchers["bossisalive"].Current && !vars.bosskilled) 
+				if (vars.gameversion >= 6 && !vars.watchers["bossisalive"].Current && !vars.bosskilled) 
 				{ 	vars.bosskilled = true;}
 			}
 			
@@ -931,12 +925,11 @@ update
 			{	if (!vars.bosskilled)
 				{	vars.lvlkills = vars.fulllvlkills - vars.watchers["enemies"].Current + vars.killsoffset;}
 				
-				if (vars.gameversion < 9 && vars.watchers["bosshealth"].Current == 0.0f && vars.watchers["bosshealth"].Old == 0.25f && !vars.bosskilled)
+				if (vars.gameversion < 6 && vars.watchers["bosshealth"].Current == 0.0f && vars.watchers["bosshealth"].Old == 0.25f && !vars.bosskilled)
 				{ 	vars.bosskilled = true;
 					vars.lvlkills += 1;}
-				if (vars.gameversion >= 9 && !vars.watchers["bossisalive"].Current && !vars.bosskilled) 
+				if (vars.gameversion >= 6 && !vars.watchers["bossisalive"].Current && !vars.bosskilled) 
 				{ 	vars.bosskilled = true;	}	
-					
 			}
 			
 			if (vars.section == 13)
@@ -947,15 +940,15 @@ update
 				{	vars.lvlkills = vars.fulllvlkills - vars.watchers["enemies"].Current + vars.killsoffset+1;}
 				else{	vars.lvlkills = vars.fulllvlkills - vars.watchers["enemies"].Current + vars.killsoffset;}
 				
-				if (vars.gameversion < 9 && vars.watchers["bosshealth"].Current == 0.0f && vars.watchers["bosshealth"].Old > 0.32f && vars.watchers["bosshealth"].Old < 0.34f && !vars.bosskilled)
+				if (vars.gameversion < 6 && vars.watchers["bosshealth"].Current == 0.0f && vars.watchers["bosshealth"].Old > 0.32f && vars.watchers["bosshealth"].Old < 0.34f && !vars.bosskilled)
 				{ 	vars.bosskilled = true;
 					vars.lvlkills = vars.fulllvlkills - vars.watchers["enemies"].Current + vars.killsoffset+1;
 				}
-				if (vars.gameversion >= 9 && !vars.watchers["bossisalive"].Current && !vars.bosskilled) 
+				if (vars.gameversion >= 6 && !vars.watchers["bossisalive"].Current && !vars.bosskilled) 
 				{ 	vars.bosskilled = true;
 					if (vars.gameversion == 12) vars.killsoffset -=1;
-					vars.lvlkills = vars.fulllvlkills - vars.watchers["enemies"].Current + vars.killsoffset+1;}
-				
+					vars.lvlkills = vars.fulllvlkills - vars.watchers["enemies"].Current + vars.killsoffset+1;
+				}
 			}
 		}
 		}
@@ -1065,11 +1058,19 @@ start
 	{0, 13, 0},	{0, 60, 0}, {0, 38, 0}, {0, 65, 0}, {0, 67, 0},
 	{0, 40, 0}, {0, 5, 0}, {0, 48, 0}, {0, 87, 0}, {0, 31, 0}, {0, 6, 0}, {0, 0, 0},
 	{0, 58, 0}, {0, 65, 0}, {0, 91, 0}, {0, 17, 0}, {0, 0, 0}};
+	if (settings["ILKC"]){
+	
+		return (old.preciseTime == 0 && current.preciseTime > 0 && vars.section >= 1 && current.map != "/Game/Levels/MainMenu/MainMenu");
+	}
+	
+	
     return (old.preciseTime == 0 && current.preciseTime > 0 && vars.section == 1 && current.map != "/Game/Levels/MainMenu/MainMenu");
 }
 
 split
-{	if (current.leaderboardShown && !old.leaderboardShown && current.map != "/Game/Levels/MainMenu/MainMenu" && settings["lvlSplit"])
+{	
+	
+	if (current.leaderboardShown && !old.leaderboardShown && current.map != "/Game/Levels/MainMenu/MainMenu" && settings["lvlSplit"])
 	{	vars.reachEOL = false;
 		return true;
 	}	
@@ -1082,6 +1083,21 @@ split
     if (current.map == "/Game/Levels/03_HIGHTECH/03_04/Cyberspace_Architect" && vars.reachEOL)
 	{	vars.reachEOL = false;
 		return true;
+	}
+}
+reset 
+{
+	if (settings["ILKC"] && vars.tryreset){
+		vars.tryreset = false;
+		int index = -1;
+		if (!settings["hardcore"]){
+			index = Array.IndexOf(vars.ILsections,vars.section);
+		} else {
+			index = Array.IndexOf(vars.ILsectionshard,vars.section);
+		}
+		if (index !=-1) {
+			return true;
+		}
 	}
 }
 
