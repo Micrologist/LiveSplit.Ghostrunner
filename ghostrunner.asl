@@ -114,6 +114,19 @@ state("Ghostrunner-Win64-Shipping", "gog12")
     int deaths : 0x05196A70, 0x118, 0x3B0;
 	int killpercp : 0x04F9D358, 0x30, 0xA80;
 }
+state("Ghostrunner-Win64-Shipping", "steam13")
+{
+    float preciseTime : 0x051992F0, 0x118, 0x3c0;
+    float levelTime : 0x051992F0, 0x118, 0x3b4;
+	bool bcantick : 0x051992F0, 0x118, 0x3c4;
+    float xVel : 0x04F9FB38, 0x30, 0x288, 0xC4;
+    float yVel : 0x04F9FB38, 0x30, 0x288, 0xC8;
+    bool loading : 0x0505C360, 0x1E8;
+    string250 map : 0x04F9FAE8, 0x30, 0xF8, 0x0;
+    bool leaderboardShown : 0x04FA1410, 0x80;
+    int deaths : 0x051992F0, 0x118, 0x3B0;
+	int killpercp : 0x04F9FB38, 0x30, 0xA80;
+}
 state("Ghostrunner-Win64-Shipping", "gog1")
 {
     float preciseTime : 0x0430CC10, 0x1A8, 0x284;
@@ -368,6 +381,11 @@ init
             version = "steam12";
 			vars.gameversion = 12;
 			vars.offsets =new List<int>() {0x05196A60,0x04F9D358,0x04F9D328,0x05068E48,0x0512BAC0,0x05196A60,0x050BF2E0,0x0,0x0,0x0,0x80};
+			break;	
+		case 91348992:
+            version = "steam13";
+			vars.gameversion = 13;
+			vars.offsets =new List<int>() {0x051992F0,0x04F9FB38,0x04F9FB08,0x0506B6C8,0x0512E350,0x051992F0,0x050C1B70,0x0,0x0,0x0,0x80};
 			break;				
         case 78036992:
             version = "gog1";
@@ -404,12 +422,15 @@ init
             MessageBox.Show("This game version is currently not supported."+version, "LiveSplit Auto Splitter - Unsupported Game Version");
             break;
     }
-	
 	if (vars.gameversion < 12) {
 		vars.enemies = new DeepPointer(vars.offsets[3], 0xB8, vars.offsets[10], 0x8, 0x10, 0x80, 0x2C0);
 		vars.tempestblocks = new DeepPointer(vars.offsets[5], 0x1F8, 0x15c);
 		vars.surgeblocks = new DeepPointer(vars.offsets[6], 0xCB0);
-	} else {
+	} else if (vars.gameversion == 12) {
+		vars.enemies = new DeepPointer(vars.offsets[3], 0xB8, vars.offsets[10], 0x8, 0x10, 0x80, 0x2C8);
+		vars.tempestblocks = new DeepPointer(vars.offsets[5], 0x1F0, 0x15c);
+		vars.surgeblocks = new DeepPointer(vars.offsets[6], 0xBF8);
+	} else { //13
 		vars.enemies = new DeepPointer(vars.offsets[3], 0xB8, vars.offsets[10], 0x18, 0x10, 0x80, 0x2C8);
 		vars.tempestblocks = new DeepPointer(vars.offsets[5], 0x1F0, 0x15c);
 		vars.surgeblocks = new DeepPointer(vars.offsets[6], 0xBF8);
@@ -798,15 +819,15 @@ update
 						
 						if (vars.gameversion < 6) {
 							vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.offsets[7], 0x28, 0x28, vars.offsets[8], vars.offsets[9], 0xE0, 0x10)) { Name = "bosshealth" });
-						} else if (vars.gameversion == 6){
-							if (vars.section == 8) {vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x5E0, 0x5e1)) { Name = "bossisalive" });}
+						} else if (vars.gameversion <9){
+							if (vars.section == 8) {vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x128, 0xB0, 0xB0, 0x5E0, 0x5e1)) { Name = "bossisalive" });}
 							if (vars.section == 12) {vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x128, 0xB0, 0xB0, 0x4C0, 0x5e1)) { Name = "bossisalive" });}
 							if (vars.section == 17) {vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x128, 0xB0, 0xB0, 0x220, 0x5e1)) { Name = "bossisalive" });}
 						} else if (vars.gameversion == 9){
 							if (vars.section == 8) {vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x5E0, 0x609)) { Name = "bossisalive" });}
 							if (vars.section == 12) {vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x4C0, 0x609)) { Name = "bossisalive" });}
 							if (vars.section == 17) {vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x138, 0xB0, 0xB0, 0x220, 0x609)) { Name = "bossisalive" });}
-						} else if (vars.gameversion == 12){
+						} else if (vars.gameversion >= 12){
 							if (vars.section == 8) {vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x128, 0xB0, 0xB0, 0x5E0, 0x609)) { Name = "bossisalive" });	}
 							if (vars.section == 12) {vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x128, 0xB0, 0xB0, 0x4C0, 0x609)) { Name = "bossisalive" });}
 							if (vars.section == 17) {vars.watchers.Add(new MemoryWatcher<bool>(new DeepPointer(vars.offsets[0], 0x128, 0xB0, 0xB0, 0x220, 0x609)) { Name = "bossisalive" });}
